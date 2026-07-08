@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How it was made — The Workshop</title>
+<meta name="description" content="A build guide for the illustrated Ikigai Engine site: hand-drawn SVG with displacement filters, sticker cards, marker highlights, and warm-palette craft.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FAF3E7'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23C4653F' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23E0A32E'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/caveat.css">
+<link rel="stylesheet" href="../fonts/nunito.css">
+<style>
+:root{--paper:#FAF3E7;--card:#FFFDF7;--ink:#3B322C;--ink-soft:#6B5F53;--terra:#C4653F;--must:#E0A32E;--sage:#5F7C58;
+--hand:'Caveat',cursive;--body:'Nunito',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.75}
+main{max-width:740px;margin:0 auto;padding:60px clamp(20px,5vw,40px) 100px}
+.crumb{font-weight:700;font-size:13.5px}
+.crumb a{color:var(--terra);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+h1{font-size:clamp(30px,6vw,44px);font-weight:800;line-height:1.15;margin:18px 0 10px;letter-spacing:-.02em}
+h1 .hand{font-family:var(--hand);color:var(--terra);font-weight:600}
+.sub{color:var(--ink-soft);max-width:56ch;font-weight:600}
+h2{font-size:22px;font-weight:800;margin:50px 0 12px;padding-top:24px;border-top:2px dashed rgba(59,50,44,.2)}
+h2 .hand{font-family:var(--hand);color:var(--terra);font-size:26px;margin-right:6px;font-weight:600}
+p{color:var(--ink-soft);margin:12px 0;max-width:64ch}
+strong{color:var(--ink)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82em;background:rgba(224,163,46,.22);padding:2px 6px;border-radius:5px;color:var(--ink)}
+pre{background:#332B25;color:#EFE4D2;padding:18px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.6;border-radius:12px;border:2px solid var(--ink)}
+pre code{background:none;color:inherit;padding:0}
+ul{margin:12px 0 12px 22px;color:var(--ink-soft)}
+li{margin:8px 0}
+.meta{display:flex;gap:24px;flex-wrap:wrap;margin-top:26px;background:var(--card);border:2px solid var(--ink);border-radius:14px;box-shadow:5px 5px 0 rgba(59,50,44,.15);padding:16px 20px;font-size:13.5px;font-weight:700}
+.meta span{color:var(--ink-soft);display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2px;font-weight:800}
+a{color:var(--terra)}
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="index.html">← Back to the site</a> · <a href="../index.html">All five studies</a></p>
+  <h1>How <span class="hand">“The Workshop”</span> was made</h1>
+  <p class="sub">Every illustration is hand-written SVG code, roughed up with a displacement filter until it looks like it was drawn with a pen — because warmth is a technique, not an asset pack.</p>
+  <div class="meta">
+    <div><span>Stack</span>HTML + CSS + ~15 lines JS</div>
+    <div><span>Illustrations</span>100% inline SVG</div>
+    <div><span>Faces</span>Nunito + Caveat</div>
+    <div><span>Images used</span>None</div>
+  </div>
+
+  <h2><span class="hand">01.</span>The wobble filter</h2>
+  <p>The entire "hand-drawn" feel comes from one SVG filter, defined once and applied with a utility class. <code>feTurbulence</code> generates smooth noise; <code>feDisplacementMap</code> pushes every pixel of the drawing around by up to ~3px along that noise. Perfectly straight <code>&lt;rect&gt;</code>s and circles come out looking penned:</p>
+<pre><code>&lt;filter id="wobble" x="-12%" y="-12%" width="124%" height="124%"&gt;
+  &lt;feTurbulence type="fractalNoise" baseFrequency=".035"
+                numOctaves="2" seed="7"/&gt;
+  &lt;feDisplacementMap in="SourceGraphic" scale="3.2"/&gt;
+&lt;/filter&gt;
+
+.wob{ filter:url(#wobble) }</code></pre>
+  <p>That means the desk scene, the friendly machine, the magnifying glass, the bell/hard-hat/mug — all of them are ordinary geometric primitives (maybe 15 shapes each) that the filter makes charming. Drawing "badly" by hand is hard; drawing plainly and distorting is easy.</p>
+
+  <h2><span class="hand">02.</span>Sticker &amp; sticky-note furniture</h2>
+  <ul>
+    <li><strong>Cards</strong> — white, 2px ink border, and a hard offset shadow (<code>box-shadow: 6px 6px 0</code>) that reads as paper lifted off the page. Each card carries a half-degree random-looking rotation; on hover it straightens and lifts, which feels like picking it up.</li>
+    <li><strong>Washi tape</strong> — a translucent mustard rectangle with a repeating-gradient stripe, absolutely positioned over the card's top edge.</li>
+    <li><strong>Sticky notes</strong> — the before/after lists are two tinted note cards rotated in opposite directions, with ✗/✓ markers generated from CSS <code>::before</code>.</li>
+    <li><strong>Squiggle dividers</strong> — one quadratic-Bézier wave path (<code>Q</code>/<code>T</code> commands), stretched full-width with <code>preserveAspectRatio="none"</code>.</li>
+  </ul>
+
+  <h2><span class="hand">03.</span>Motion that feels analog</h2>
+  <p>Nothing slides in from off-screen. Instead: the pain-list checkboxes <strong>check themselves</strong> as you scroll (the checkmark is a stroke with <code>stroke-dasharray</code> animated to zero offset when the row enters the viewport); the marker-highlight behind key phrases sweeps across using a scaling pseudo-element; coffee steam loops on a gentle opacity/translate keyframe; the plant bobs; the machine's antenna wags. All tiny, all loop-friendly, all disabled under <code>prefers-reduced-motion</code>.</p>
+
+  <h2><span class="hand">04.</span>The voice pairing</h2>
+  <p>Nunito (rounded, sturdy) carries all real content; Caveat (a genuine handwriting face) is reserved for margin notes — <em>"the pile…", "one clear view!", "that's both things we fix →"</em>. The handwriting layer works like a friend annotating the page over your shoulder, which is exactly the brand's operator-to-operator promise. Rule of thumb: if it's information, it's Nunito; if it's personality, it's Caveat.</p>
+
+  <h2><span class="hand">05.</span>Warmth without mush</h2>
+  <p>The palette is terracotta, mustard, and sage on cream — but contrast discipline keeps it professional: all body text is a dark coffee ink (≥7:1 on cream), color is reserved for fills inside illustrations and accents, and the 2px ink outlines keep every element crisp. A fixed <code>feTurbulence</code> grain overlay at 5% opacity in multiply mode gives the whole page a paper tooth.</p>
+
+  <h2><span class="hand">06.</span>Lessons if you build one</h2>
+  <ul>
+    <li>One displacement filter turns programmer-SVG into illustration — spend your effort on <em>what</em> to draw, not how to draw it.</li>
+    <li>Hard offset shadows + thin ink borders read as "paper craft"; soft blurred shadows read as "software." Pick one world.</li>
+    <li>Rotate things 0.5–1.2°, never more. Past that, quirky becomes sloppy.</li>
+    <li>Handwriting fonts are seasoning, not soup. Two or three annotations per screen, maximum.</li>
+  </ul>
+</main>
+</body>
+</html>

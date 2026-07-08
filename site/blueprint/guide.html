@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How it was built — The Operations Blueprint</title>
+<meta name="description" content="A build guide for the blueprint-style Ikigai Engine site: drafting-paper CSS grids, self-drawing SVG schematics, dimension lines, and a rubber-stamp animation.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230C2340'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%237FB4D9' stroke-width='1.5' stroke-dasharray='3 2'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23E8C547'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/ibm-plex-mono.css">
+<link rel="stylesheet" href="../fonts/space-grotesk.css">
+<style>
+:root{--paper:#0C2340;--line:rgba(127,180,217,.16);--line-strong:rgba(127,180,217,.42);--ink:#DCEBF7;--ink-soft:#A8C6DE;--ink-faint:#6E93B4;--chalk:#F4F9FD;--tape:#E8C547;
+--mono:'IBM Plex Mono',ui-monospace,monospace;--sans:'Space Grotesk',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.7;
+background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:96px 96px}
+main{max-width:780px;margin:0 auto;padding:64px clamp(20px,5vw,40px) 96px}
+.crumb{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.crumb a{color:var(--tape);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+h1{font-size:clamp(30px,6vw,44px);color:var(--chalk);line-height:1.12;margin:18px 0 10px;letter-spacing:-.01em}
+.sub{color:var(--ink-soft);max-width:60ch}
+h2{font-size:22px;color:var(--chalk);margin:52px 0 12px;padding-top:22px;border-top:1px solid var(--line-strong)}
+h2::before{content:"§ ";color:var(--tape)}
+p{color:var(--ink-soft);margin:12px 0;max-width:68ch}
+strong{color:var(--chalk)}
+code{font-family:var(--mono);font-size:.86em;background:rgba(127,180,217,.12);padding:2px 6px;border-radius:3px;color:var(--chalk)}
+pre{background:rgba(6,18,36,.85);border:1px solid var(--line-strong);padding:18px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:var(--ink-soft)}
+ul{margin:12px 0 12px 22px;color:var(--ink-soft)}
+li{margin:7px 0}
+.meta{display:flex;gap:24px;flex-wrap:wrap;margin-top:26px;border:1px solid var(--line-strong);padding:16px 20px;font-family:var(--mono);font-size:12px;background:rgba(14,42,77,.4)}
+.meta span{color:var(--ink-faint);display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2px}
+a{color:var(--tape)}
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="index.html">← Back to the site</a> · <a href="../index.html">All five studies</a></p>
+  <h1>How “The Operations Blueprint” was built</h1>
+  <p class="sub">A drafting-table aesthetic, built entirely in code — no images, no frameworks, one HTML file.</p>
+  <div class="meta">
+    <div><span>Stack</span>HTML + CSS + vanilla JS</div>
+    <div><span>Assets</span>Inline SVG, self-hosted fonts</div>
+    <div><span>Weight</span>~35 KB page + 2 fonts</div>
+    <div><span>Dependencies</span>Zero</div>
+  </div>
+
+  <h2>The concept</h2>
+  <p>Ikigai Engine draws up a plan for your operations, so the site is literally a set of drawings: numbered sheets (<em>SHEET 2 OF 6 — SITE SURVEY</em>), figure numbers, a title block, a bill of works, a revision history, and an approval stamp. Every marketing section maps to a drafting convention — the pain list becomes a <strong>defect log</strong>, before/after becomes <strong>REV. A vs REV. B</strong>, services become a <strong>bill of materials</strong>. The conceit does the storytelling; the copy stays plain-spoken.</p>
+
+  <h2>The drafting paper</h2>
+  <p>The background is four stacked CSS <code>linear-gradient</code>s on a fixed element — a fine 12px grid and a bold 96px grid — plus a radial vignette so the edges fall away like a lit drafting table. No image files:</p>
+<pre><code>background-image:
+  linear-gradient(var(--line) 1px, transparent 1px),
+  linear-gradient(90deg, var(--line) 1px, transparent 1px),
+  linear-gradient(rgba(127,180,217,.05) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(127,180,217,.05) 1px, transparent 1px);
+background-size: 96px 96px, 96px 96px, 12px 12px, 12px 12px;</code></pre>
+
+  <h2>Self-drawing schematics</h2>
+  <p>Every diagram is hand-written inline SVG (documents, lens, gears, gauges). The “drawn by a pen” effect is the classic stroke-dash trick, applied generically: JS measures each path with <code>getTotalLength()</code>, sets <code>stroke-dasharray</code> and <code>stroke-dashoffset</code> to that length (so the stroke is invisible), then an <code>IntersectionObserver</code> flips the offset to 0 when the figure scrolls into view. A per-stroke <code>transition-delay</code> staggers the drawing order so figures assemble piece by piece.</p>
+<pre><code>const len = path.getTotalLength();
+path.style.strokeDasharray  = `${len} ${len}`;
+path.style.strokeDashoffset = len;          // hidden
+// on intersect:
+path.style.strokeDashoffset = 0;            // draws itself</code></pre>
+  <p>Flow lines use a second trick — <code>stroke-dasharray: 5 5</code> with a keyframe animating <code>stroke-dashoffset</code> — to get “marching ants” that make the pipework feel alive. Gears rotate with plain CSS <code>@keyframes</code> on <code>transform-box: fill-box</code>.</p>
+
+  <h2>Dimension lines &amp; title blocks</h2>
+  <p>The measurement line under the headline is pure CSS: a 1px bar with two tick marks from <code>::before/::after</code>, and a centered label whose background matches the page so it appears to interrupt the line. Title blocks are just bordered CSS grids in IBM Plex Mono — the font does most of the work.</p>
+
+  <h2>The approval stamp</h2>
+  <p>The “APPROVED FOR AUTOMATION” stamp pops in with a springy <code>cubic-bezier(.2,1.6,.3,1)</code> scale-down (like a real stamp hitting paper). The worn rubber-ink texture is an inline SVG <code>feTurbulence</code> noise applied as a <code>mask-image</code> — again, zero image files. One gotcha worth stealing: the stamp starts at <code>scale(2.4)</code>, and scaled elements enlarge the browser’s scrollable area, which caused horizontal scroll on phones. Fix: <code>overflow: hidden</code> on the section and <code>overflow-x: clip</code> on <code>html</code>.</p>
+
+  <h2>Micro-interactions</h2>
+  <ul>
+    <li><strong>Crosshair cursor</strong> — two fixed hairlines plus a live <code>X/Y</code> coordinate readout, updated inside <code>requestAnimationFrame</code>. Only enabled for <code>(pointer:fine)</code> devices and hidden until the mouse first moves.</li>
+    <li><strong>Reveal-on-scroll</strong> — one reusable <code>.rv</code> class (opacity + 26px rise) driven by a single IntersectionObserver, with <code>.d1/.d2/.d3</code> delay modifiers.</li>
+    <li><strong>Hover states</strong> — defect-log rows tint yellow like highlighter; method cards lift with a long soft shadow.</li>
+    <li><strong>Ticker strip</strong> — the three-beat mantra loops in a CSS marquee (two duplicated spans, <code>translateX(-50%)</code>).</li>
+  </ul>
+
+  <h2>Type &amp; accessibility</h2>
+  <p>Two self-hosted faces: <strong>Space Grotesk</strong> for headlines (geometric, slightly technical) and <strong>IBM Plex Mono</strong> for all annotations — the pairing sells the “document” feel. Everything respects <code>prefers-reduced-motion</code> (drawing, marquee, and crosshair all disable), diagrams carry <code>role="img"</code> + labels, and the tables use ARIA row/columnheader roles.</p>
+
+  <h2>Lessons if you build one</h2>
+  <ul>
+    <li>Pick one metaphor and commit to it in every section — consistency is what makes it feel designed, not decorated.</li>
+    <li>Inline SVG + <code>getTotalLength()</code> gives you “expensive-looking” animation for free, with no libraries.</li>
+    <li>Test on a phone early: transforms, marquees, and absolutely-positioned decorations are the usual horizontal-scroll culprits.</li>
+  </ul>
+</main>
+</body>
+</html>

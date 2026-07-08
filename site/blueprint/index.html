@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ikigai Engine — The Operations Blueprint</title>
+<meta name="description" content="Ikigai Engine turns scattered, manual work into clear answers, automated workflows, and AI tools that do the heavy lifting. Book a free operations audit.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230C2340'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%237FB4D9' stroke-width='1.5' stroke-dasharray='3 2'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23E8C547'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/ibm-plex-mono.css">
+<link rel="stylesheet" href="../fonts/space-grotesk.css">
+<style>
+:root{
+  --paper:#0C2340;
+  --paper-2:#0E2A4D;
+  --line:rgba(127,180,217,.16);
+  --line-strong:rgba(127,180,217,.42);
+  --ink:#DCEBF7;
+  --ink-soft:#A8C6DE;
+  --ink-faint:#6E93B4;
+  --chalk:#F4F9FD;
+  --tape:#E8C547;
+  --stamp:#E86A5E;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --pad:clamp(20px,5vw,72px);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+body{
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(30,72,120,.55), transparent 60%),
+    var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:17px;
+  line-height:1.65;
+  overflow-x:hidden;
+}
+/* drafting-paper grid */
+.grid-bg{
+  position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:
+    linear-gradient(var(--line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line) 1px,transparent 1px),
+    linear-gradient(rgba(127,180,217,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(127,180,217,.05) 1px,transparent 1px);
+  background-size:96px 96px,96px 96px,12px 12px,12px 12px;
+}
+.grid-bg::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(90% 90% at 50% 45%,transparent 55%,rgba(4,14,28,.55) 100%);
+}
+::selection{background:var(--tape);color:#0C2340}
+
+/* ---------- frame / sheet border ---------- */
+.sheet-frame{
+  position:fixed;inset:10px;z-index:40;pointer-events:none;
+  border:1px solid var(--line-strong);
+}
+.sheet-frame::before,.sheet-frame::after{
+  content:"";position:absolute;width:14px;height:14px;border:1px solid var(--line-strong);
+}
+.sheet-frame::before{top:-8px;left:-8px;border-right:0;border-bottom:0}
+.sheet-frame::after{bottom:-8px;right:-8px;border-left:0;border-top:0}
+@media (max-width:720px){.sheet-frame{inset:6px}}
+
+/* ---------- header ---------- */
+header{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;gap:18px;
+  padding:14px var(--pad);
+  background:linear-gradient(rgba(12,35,64,.92),rgba(12,35,64,.85));
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line-strong);
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+}
+.brand{display:flex;align-items:center;gap:10px;color:var(--chalk);text-decoration:none;font-weight:600;white-space:nowrap}
+.brand svg{flex:none}
+.dwgno{color:var(--ink-faint);white-space:nowrap}
+header nav{margin-left:auto;display:flex;gap:22px}
+header nav a{color:var(--ink-soft);text-decoration:none;text-transform:uppercase;position:relative}
+header nav a::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:1px;background:var(--tape);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+header nav a:hover{color:var(--chalk)}
+header nav a:hover::after{transform:scaleX(1)}
+.btn{
+  display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:#0C2340;background:var(--tape);text-decoration:none;
+  padding:12px 22px;border:1px solid var(--tape);
+  box-shadow:4px 4px 0 rgba(232,197,71,.25);
+  transition:transform .15s,box-shadow .15s;
+}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(232,197,71,.3)}
+.btn:active{transform:translate(0,0);box-shadow:2px 2px 0 rgba(232,197,71,.25)}
+.btn.ghost{background:transparent;color:var(--tape);box-shadow:4px 4px 0 rgba(232,197,71,.12)}
+header .btn{padding:9px 16px;margin-left:8px}
+@media (max-width:900px){header nav{display:none}.dwgno{display:none}}
+
+/* ---------- shared section chrome ---------- */
+section{padding:clamp(64px,8vw,104px) var(--pad);position:relative;max-width:1280px;margin:0 auto}
+.sheet-tag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);
+  display:flex;align-items:center;gap:14px;margin-bottom:26px;
+}
+.sheet-tag::before{content:"";width:34px;height:1px;background:var(--line-strong)}
+.sheet-tag b{color:var(--tape);font-weight:600}
+h1,h2,h3{font-family:var(--sans);color:var(--chalk);letter-spacing:-.015em}
+h2{font-size:clamp(28px,4.4vw,46px);line-height:1.12;font-weight:600;max-width:22ch}
+.lead{color:var(--ink-soft);max-width:62ch;margin-top:20px;font-size:clamp(16px,1.4vw,19px)}
+em{font-style:normal;color:var(--tape)}
+.note{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);letter-spacing:.02em}
+
+/* reveal on scroll */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.6,.2,1),transform .8s cubic-bezier(.2,.6,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.22s}.rv.d3{transition-delay:.34s}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(32px,5vw,72px);align-items:center;min-height:calc(100svh - 62px);padding-top:clamp(40px,6vw,80px)}
+.hero h1{font-size:clamp(38px,6vw,72px);line-height:1.04;font-weight:600}
+.hero h1 .u{position:relative;white-space:nowrap}
+.hero h1 .u::after{
+  content:"";position:absolute;left:0;bottom:.04em;width:100%;height:.14em;
+  background:var(--tape);opacity:.35;z-index:-1;
+}
+.hero .lead{margin-top:24px}
+.cta-row{margin-top:34px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.cta-sub{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);max-width:46ch;line-height:1.7}
+/* dimension line under H1 */
+.dim{position:relative;margin-top:18px;height:26px;max-width:520px}
+.dim .bar{position:absolute;top:12px;left:0;right:0;height:1px;background:var(--line-strong)}
+.dim .bar::before,.dim .bar::after{content:"";position:absolute;top:-5px;width:1px;height:11px;background:var(--line-strong)}
+.dim .bar::before{left:0}.dim .bar::after{right:0}
+.dim .lbl{
+  position:absolute;top:2px;left:50%;transform:translateX(-50%);
+  background:var(--paper);padding:0 12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap;
+}
+/* hero figure */
+.fig{position:relative}
+.fig figcaption{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.fig svg{width:100%;height:auto;display:block}
+.fig .frame{border:1px solid var(--line-strong);padding:clamp(14px,2vw,26px);background:rgba(14,42,77,.35);position:relative}
+.fig .frame::after{content:"";position:absolute;inset:6px;border:1px dashed var(--line);pointer-events:none}
+/* svg stroke defaults */
+svg .s{fill:none;stroke:var(--ink-soft);stroke-width:1.4;vector-effect:non-scaling-stroke}
+svg .s.chalk{stroke:var(--chalk)}
+svg .s.tape{stroke:var(--tape)}
+svg .s.faint{stroke:var(--ink-faint);stroke-width:1}
+svg .dash{stroke-dasharray:5 5;animation:march 1.4s linear infinite}
+svg .dot{fill:var(--tape);stroke:none}
+svg text{font-family:var(--mono);fill:var(--ink-faint);letter-spacing:.14em}
+@keyframes march{to{stroke-dashoffset:-10}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spin-r{to{transform:rotate(-360deg)}}
+.gear{transform-origin:center;transform-box:fill-box;animation:spin 14s linear infinite}
+.gear.r{animation:spin-r 18s linear infinite}
+/* draw-in strokes (dash lengths set by JS) */
+.draw .s{transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1)}
+/* title block */
+.tblock{
+  border:1px solid var(--line-strong);margin-top:26px;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;background:rgba(14,42,77,.35);
+}
+.tblock div{padding:10px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tblock div:nth-child(3n){border-right:0}
+.tblock div:nth-last-child(-n+3){border-bottom:0}
+.tblock span{display:block;color:var(--ink-faint);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:3px}
+.tblock b{color:var(--chalk);font-weight:500}
+
+/* ---------- ticker strip ---------- */
+.strip{border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong);overflow:hidden;background:rgba(14,42,77,.5)}
+.strip .track{display:flex;width:max-content;animation:tick 30s linear infinite}
+.strip span{
+  font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-faint);
+  padding:13px 0;white-space:nowrap;
+}
+.strip b{color:var(--tape);font-weight:500}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ---------- defect log ---------- */
+.defects{margin-top:44px;border:1px solid var(--line-strong);background:rgba(14,42,77,.3)}
+.defects .row{
+  display:grid;grid-template-columns:86px 1fr auto;gap:16px;align-items:center;
+  padding:18px 20px;border-bottom:1px solid var(--line);
+  transition:background .25s;
+}
+.defects .row:last-child{border-bottom:0}
+.defects .row:hover{background:rgba(232,197,71,.05)}
+.defects .code{font-family:var(--mono);font-size:12px;color:var(--stamp);letter-spacing:.1em}
+.defects .desc{color:var(--ink-soft);font-size:15.5px}
+.defects .flag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--stamp);border:1px solid rgba(232,106,94,.5);padding:4px 9px;white-space:nowrap;
+}
+.defects .hd{background:rgba(12,35,64,.6);font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint)}
+.defects .hd:hover{background:rgba(12,35,64,.6)}
+@media (max-width:640px){
+  .defects .row{grid-template-columns:64px 1fr;gap:10px}
+  .defects .flag{display:none}
+}
+.problem-close{margin-top:36px;max-width:62ch;color:var(--ink-soft);font-size:clamp(16px,1.4vw,19px)}
+.problem-close strong{color:var(--chalk)}
+
+/* ---------- lens section ---------- */
+.lens-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:center}
+.quote{
+  margin-top:30px;padding:20px 26px;border-left:2px solid var(--tape);
+  font-family:var(--mono);font-size:14px;color:var(--chalk);letter-spacing:.02em;
+}
+@media (max-width:900px){.lens-grid{grid-template-columns:1fr}}
+
+/* ---------- three beats ---------- */
+.beats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px;counter-reset:beat}
+.beat{
+  border:1px solid var(--line-strong);background:rgba(14,42,77,.35);
+  padding:26px 24px 30px;position:relative;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+.beat:hover{transform:translateY(-6px);border-color:rgba(232,197,71,.6);box-shadow:0 18px 40px -20px rgba(0,0,0,.6)}
+.beat::before{
+  counter-increment:beat;content:"FIG. 0" counter(beat);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--ink-faint);
+  display:block;margin-bottom:16px;
+}
+.beat svg{width:100%;height:150px;margin-bottom:18px}
+.beat h3{font-size:21px;margin-bottom:10px;font-weight:600}
+.beat p{color:var(--ink-soft);font-size:15px;line-height:1.7}
+.beat .conn{position:absolute;top:50%;right:-23px;width:24px;height:1px;border-top:1px dashed var(--line-strong);z-index:1}
+@media (max-width:960px){
+  .beats{grid-template-columns:1fr;max-width:560px}
+  .beat .conn{display:none}
+}
+.result{
+  margin-top:40px;border:1px solid var(--line-strong);padding:clamp(26px,4vw,44px);
+  background:linear-gradient(rgba(232,197,71,.06),rgba(232,197,71,.02));position:relative;
+}
+.result::before{
+  content:"GENERAL NOTES";position:absolute;top:-9px;left:22px;background:var(--paper);
+  padding:0 10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--tape);
+}
+.result p{font-size:clamp(18px,2.2vw,24px);color:var(--chalk);max-width:34ch;line-height:1.45;font-weight:500}
+
+/* ---------- bill of materials ---------- */
+.bom{margin-top:44px;border:1px solid var(--line-strong);overflow:hidden}
+.bom-row{
+  display:grid;grid-template-columns:110px minmax(0,1fr) minmax(0,1.6fr);
+  border-bottom:1px solid var(--line);background:rgba(14,42,77,.3);
+  transition:background .25s;
+}
+.bom-row:hover{background:rgba(232,197,71,.05)}
+.bom-row:last-child{border-bottom:0}
+.bom-row>div{padding:18px 20px;border-right:1px solid var(--line)}
+.bom-row>div:last-child{border-right:0}
+.bom-row .pn{font-family:var(--mono);font-size:12px;color:var(--tape);letter-spacing:.08em}
+.bom-row .nm{color:var(--chalk);font-weight:600;font-size:16px}
+.bom-row .ds{color:var(--ink-soft);font-size:14.5px;line-height:1.65}
+.bom-row.hd{background:rgba(12,35,64,.6);font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint)}
+.bom-row.hd>div{padding:12px 20px}
+@media (max-width:760px){
+  .bom-row{grid-template-columns:1fr}
+  .bom-row>div{border-right:0;border-bottom:1px dashed var(--line);padding:12px 18px}
+  .bom-row>div:last-child{border-bottom:0}
+  .bom-row.hd{display:none}
+}
+
+/* ---------- revisions (before/after) ---------- */
+.revs{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:48px}
+.rev{border:1px solid var(--line-strong);background:rgba(14,42,77,.3)}
+.rev .rhd{
+  display:flex;justify-content:space-between;align-items:center;gap:8px 18px;flex-wrap:wrap;
+  padding:14px 20px;border-bottom:1px solid var(--line-strong);
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+}
+.rev .rhd span:last-child{opacity:.7}
+.rev.a .rhd{color:var(--stamp)}
+.rev.b .rhd{color:#8FD4A8}
+.rev ul{list-style:none}
+.rev li{padding:15px 20px;border-bottom:1px dashed var(--line);color:var(--ink-soft);font-size:14.5px;line-height:1.6;display:flex;gap:12px;align-items:flex-start}
+.rev li:last-child{border-bottom:0}
+.rev li::before{font-family:var(--mono);font-size:12px;margin-top:2px}
+.rev.a li::before{content:"✕";color:var(--stamp)}
+.rev.b li::before{content:"✓";color:#8FD4A8}
+.rev.b li{color:var(--ink)}
+@media (max-width:820px){.revs{grid-template-columns:1fr}}
+
+/* ---------- about ---------- */
+.about{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(32px,5vw,72px)}
+.about .copy p{color:var(--ink-soft);margin-bottom:18px;max-width:58ch}
+.about .copy p strong{color:var(--chalk)}
+.drawnby{
+  border:1px dashed var(--line-strong);padding:24px;margin-top:8px;
+  font-family:var(--mono);font-size:12px;line-height:2;color:var(--ink-faint);
+  background:rgba(14,42,77,.3);
+}
+.drawnby b{color:var(--tape);font-weight:500}
+@media (max-width:900px){.about{grid-template-columns:1fr}}
+
+/* ---------- CTA ---------- */
+.cta{text-align:center;padding-bottom:clamp(90px,12vw,150px);overflow:hidden}
+.cta h2{margin:0 auto;max-width:20ch}
+.cta .lead{margin:22px auto 0}
+.stamp{
+  display:inline-block;margin:0 auto 34px;padding:14px 30px;
+  border:3px solid var(--stamp);color:var(--stamp);
+  font-family:var(--mono);font-weight:600;font-size:clamp(13px,1.6vw,17px);letter-spacing:.3em;text-transform:uppercase;
+  transform:rotate(-6deg) scale(2.4);opacity:0;border-radius:4px;
+  transition:transform .45s cubic-bezier(.2,1.6,.3,1),opacity .3s;
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.72' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .82 .22'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-size:110px;
+}
+.stamp.in{transform:rotate(-6deg) scale(1);opacity:.95}
+.cta .cta-actions{margin-top:36px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;align-items:center}
+.cta .cta-sub{margin:20px auto 0;text-align:center}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line-strong);background:rgba(9,26,48,.8)}
+.fblock{
+  max-width:1280px;margin:0 auto;padding:0 var(--pad);
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+}
+.fblock>div{padding:20px 18px 22px;border-right:1px solid var(--line)}
+.fblock>div:first-child{padding-left:0}
+.fblock>div:last-child{border-right:0}
+.fblock span{display:block;color:var(--ink-faint);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
+.fblock b{color:var(--chalk);font-weight:500}
+.fblock a{color:var(--ink-soft);text-decoration:none}
+.fblock a:hover{color:var(--tape)}
+.fbase{max-width:1280px;margin:0 auto;padding:16px var(--pad) 26px;font-family:var(--mono);font-size:11px;color:var(--ink-faint);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.fbase a{color:var(--ink-soft)}
+@media (max-width:820px){.fblock{grid-template-columns:1fr 1fr}.fblock>div{border-bottom:1px solid var(--line)}.fblock>div:first-child{padding-left:18px}}
+@media (max-width:480px){.fblock{grid-template-columns:1fr}.fblock>div{border-right:0;padding-left:0!important}}
+
+/* ---------- crosshair readout ---------- */
+.xhair{position:fixed;z-index:50;pointer-events:none;display:none;opacity:0;transition:opacity .3s}
+.xhair.on{opacity:1}
+@media (pointer:fine){.xhair{display:block}}
+.xhair .v,.xhair .h{position:fixed;background:rgba(232,197,71,.22)}
+.xhair .v{top:0;bottom:0;width:1px}
+.xhair .h{left:0;right:0;height:1px}
+.xhair .co{
+  position:fixed;transform:translate(14px,14px);
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--tape);opacity:.85;
+  background:rgba(12,35,64,.8);padding:3px 7px;border:1px solid rgba(232,197,71,.3);white-space:nowrap;
+}
+
+/* mobile hero */
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding-top:44px}
+  .hero .fig{max-width:560px}
+}
+@media (max-width:640px){
+  .tblock{grid-template-columns:repeat(2,1fr)}
+  .tblock div:nth-child(3n){border-right:1px solid var(--line)}
+  .tblock div:nth-child(2n){border-right:0}
+  .tblock div:nth-last-child(-n+3){border-bottom:1px solid var(--line)}
+  .tblock div:nth-last-child(-n+2){border-bottom:0}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg" aria-hidden="true"></div>
+<div class="sheet-frame" aria-hidden="true"></div>
+<div class="xhair" aria-hidden="true"><i class="v"></i><i class="h"></i><span class="co">X 0000 · Y 0000</span></div>
+
+<header>
+  <a class="brand" href="#top" aria-label="Ikigai Engine">
+    <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12" fill="none" stroke="#7FB4D9" stroke-width="1.4" stroke-dasharray="3.5 2.5"/><circle cx="16" cy="16" r="4" fill="#E8C547"/></svg>
+    IKIGAI&nbsp;ENGINE
+  </a>
+  <span class="dwgno">DWG NO. IE-OPS-001 · REV C</span>
+  <nav>
+    <a href="#problem">Survey</a>
+    <a href="#how">Method</a>
+    <a href="#build">Bill of works</a>
+    <a href="#about">Drawn by</a>
+    <a href="guide.html">How it's built</a>
+  </nav>
+  <a class="btn" href="#audit">Book free audit</a>
+</header>
+
+<main id="top">
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div>
+    <p class="sheet-tag rv">SHEET 1 OF 6 — <b>GENERAL ARRANGEMENT</b></p>
+    <h1 class="rv d1">See your business <span class="u">clearly</span>.<br>Then let it run itself.</h1>
+    <div class="dim rv d2" aria-hidden="true"><i class="bar"></i><span class="lbl">Clarity, measured</span></div>
+    <p class="lead rv d2">Ikigai Engine turns the scattered, messy work you do by hand into clear answers, automated workflows, and AI tools that do the heavy lifting. First we help you <em>see</em> what’s really happening. Then we take the busywork off your plate.</p>
+    <div class="cta-row rv d3">
+      <a class="btn" href="#audit">Book a free operations audit</a>
+      <p class="cta-sub">30 minutes. No tech jargon. You’ll leave knowing exactly where you’re losing time — and what we can automate first.</p>
+    </div>
+  </div>
+
+  <figure class="fig rv d2">
+    <div class="frame">
+      <svg id="engine-fig" class="draw" viewBox="0 0 520 420" role="img" aria-label="Schematic of the Ikigai Engine: inputs flow through a lens into an automated engine and out to clear decisions">
+        <!-- input documents (messy) -->
+        <g>
+          <rect class="s faint" x="24" y="52"  width="64" height="80" transform="rotate(-6 56 92)"/>
+          <rect class="s faint" x="30" y="170" width="64" height="80" transform="rotate(4 62 210)"/>
+          <rect class="s faint" x="22" y="290" width="64" height="80" transform="rotate(-3 54 330)"/>
+          <line class="s faint" x1="36" y1="76"  x2="76" y2="72"/><line class="s faint" x1="36" y1="90"  x2="76" y2="86"/><line class="s faint" x1="36" y1="104" x2="66" y2="101"/>
+          <line class="s faint" x1="42" y1="196" x2="82" y2="199"/><line class="s faint" x1="42" y1="210" x2="82" y2="213"/><line class="s faint" x1="42" y1="224" x2="72" y2="226"/>
+          <line class="s faint" x1="34" y1="314" x2="74" y2="312"/><line class="s faint" x1="34" y1="328" x2="74" y2="326"/><line class="s faint" x1="34" y1="342" x2="64" y2="341"/>
+        </g>
+        <text x="24" y="34" font-size="9">INPUTS — SCATTERED</text>
+
+        <!-- flow lines into lens -->
+        <path class="s dash" d="M96 92 C 150 92, 150 180, 196 196"/>
+        <path class="s dash" d="M102 210 C 140 210, 160 205, 196 208"/>
+        <path class="s dash" d="M94 330 C 150 330, 150 235, 196 218"/>
+
+        <!-- lens -->
+        <circle class="s chalk" cx="232" cy="208" r="42"/>
+        <circle class="s tape"  cx="232" cy="208" r="28" stroke-dasharray="4 3"/>
+        <circle class="dot" cx="232" cy="208" r="4"/>
+        <text x="196" y="152" font-size="9">THE LENS</text>
+
+        <!-- beam to engine -->
+        <path class="s tape" d="M274 208 L 322 208"/>
+
+        <!-- engine: gears in housing -->
+        <rect class="s chalk" x="322" y="148" width="120" height="120"/>
+        <g class="gear"><path class="s" d="M362 178 l4 -10 8 0 4 10 10 4 0 8 -10 4 -4 10 -8 0 -4 -10 -10 -4 0 -8 z"/><circle class="s" cx="370" cy="190" r="7"/></g>
+        <g class="gear r"><path class="s" d="M394 216 l4 -10 8 0 4 10 10 4 0 8 -10 4 -4 10 -8 0 -4 -10 -10 -4 0 -8 z"/><circle class="s" cx="402" cy="228" r="7"/></g>
+        <text x="322" y="284" font-size="9">AUTOMATION ENGINE</text>
+
+        <!-- AI coil above -->
+        <path class="s" d="M362 148 C 362 118, 402 118, 402 148"/>
+        <path class="s faint" d="M354 148 C 354 108, 410 108, 410 148"/>
+        <circle class="dot" cx="382" cy="122" r="3"/>
+        <text x="352" y="96" font-size="9">AI ASSIST</text>
+
+        <!-- output: clean gauge + report -->
+        <path class="s dash tape" d="M442 208 L 476 208"/>
+        <g>
+          <path class="s chalk" d="M446 320 a 34 34 0 1 1 68 0"/>
+          <line class="s tape" x1="480" y1="320" x2="500" y2="296"/>
+          <circle class="dot" cx="480" cy="320" r="3.5"/>
+        </g>
+        <rect class="s chalk" x="446" y="60" width="60" height="76"/>
+        <line class="s tape" x1="456" y1="80" x2="496" y2="80"/>
+        <line class="s" x1="456" y1="96" x2="496" y2="96"/>
+        <line class="s" x1="456" y1="110" x2="486" y2="110"/>
+        <path class="s dash" d="M476 208 C 500 208, 476 150, 476 140"/>
+        <path class="s dash" d="M476 208 C 500 208, 480 260, 480 282"/>
+        <text x="440" y="48" font-size="9">CLEAR ANSWERS</text>
+        <text x="392" y="372" font-size="9">DECISIONS, ON TIME</text>
+      </svg>
+    </div>
+    <figcaption><span>FIG. 01 — THE IKIGAI ENGINE, GENERAL ARRANGEMENT</span><span>SCALE 1 : 1</span></figcaption>
+    <div class="tblock" aria-hidden="true">
+      <div><span>Project</span><b>Your business</b></div>
+      <div><span>Client</span><b>The Owner</b></div>
+      <div><span>Drawn by</span><b>An operator</b></div>
+      <div><span>Scale</span><b>1 : 1 — real world</b></div>
+      <div><span>Date</span><b id="dwg-date">—</b></div>
+      <div><span>Revision</span><b>C — “Clarity”</b></div>
+    </div>
+  </figure>
+</section>
+</main>
+
+<!-- ============ STRIP ============ -->
+<div class="strip" aria-hidden="true">
+  <div class="track"><span>SEE IT&nbsp;&nbsp;·&nbsp;&nbsp;<b>AUTOMATE IT</b>&nbsp;&nbsp;·&nbsp;&nbsp;LET AI HANDLE THE HEAVY LIFTING&nbsp;&nbsp;·&nbsp;&nbsp;<b>CLARITY FIRST</b>&nbsp;&nbsp;·&nbsp;&nbsp;SEE IT&nbsp;&nbsp;·&nbsp;&nbsp;<b>AUTOMATE IT</b>&nbsp;&nbsp;·&nbsp;&nbsp;LET AI HANDLE THE HEAVY LIFTING&nbsp;&nbsp;·&nbsp;&nbsp;<b>CLARITY FIRST</b>&nbsp;&nbsp;·&nbsp;&nbsp;</span><span>SEE IT&nbsp;&nbsp;·&nbsp;&nbsp;<b>AUTOMATE IT</b>&nbsp;&nbsp;·&nbsp;&nbsp;LET AI HANDLE THE HEAVY LIFTING&nbsp;&nbsp;·&nbsp;&nbsp;<b>CLARITY FIRST</b>&nbsp;&nbsp;·&nbsp;&nbsp;SEE IT&nbsp;&nbsp;·&nbsp;&nbsp;<b>AUTOMATE IT</b>&nbsp;&nbsp;·&nbsp;&nbsp;LET AI HANDLE THE HEAVY LIFTING&nbsp;&nbsp;·&nbsp;&nbsp;<b>CLARITY FIRST</b>&nbsp;&nbsp;·&nbsp;&nbsp;</span></div>
+</div>
+
+<!-- ============ PROBLEM ============ -->
+<section id="problem">
+  <p class="sheet-tag rv">SHEET 2 OF 6 — <b>SITE SURVEY</b></p>
+  <h2 class="rv">You’re running the business. But can you actually <em>see</em> it — and how much of it are you doing by hand?</h2>
+  <p class="lead rv d1">Most owners are flying half-blind and buried in busywork at the same time. The numbers live in one spreadsheet, the orders in another, the real story in your inbox — and the rest is just in your head.</p>
+
+  <div class="defects rv d2" role="table" aria-label="Defect log: where your week goes">
+    <div class="row hd" role="row"><span class="code" role="columnheader">REF</span><span role="columnheader">OBSERVED CONDITION — WHERE YOUR WEEK GOES</span><span role="columnheader">STATUS</span></div>
+    <div class="row" role="row"><span class="code">DF-01</span><span class="desc">Rebuilding the same report by hand, every week</span><span class="flag">Recurring</span></div>
+    <div class="row" role="row"><span class="code">DF-02</span><span class="desc">Copying the same numbers between files — and praying you didn’t fat-finger one</span><span class="flag">Error-prone</span></div>
+    <div class="row" role="row"><span class="code">DF-03</span><span class="desc">Reading every quote, email, and document yourself, because no one else can</span><span class="flag">Bottleneck</span></div>
+    <div class="row" role="row"><span class="code">DF-04</span><span class="desc">Chasing answers to simple questions like “are we actually making money on this?”</span><span class="flag">Blind spot</span></div>
+    <div class="row" role="row"><span class="code">DF-05</span><span class="desc">Doing the work instead of running the business — no time left to think</span><span class="flag">Critical</span></div>
+  </div>
+
+  <p class="problem-close rv">It’s not that you’re disorganized. It’s that nobody ever built you the tools to <em>see</em> clearly, or the systems to stop doing it all manually. <strong>That’s both things we fix.</strong></p>
+</section>
+
+<!-- ============ LENS ============ -->
+<section id="lens">
+  <p class="sheet-tag rv">SHEET 3 OF 6 — <b>OPTICS</b></p>
+  <div class="lens-grid">
+    <div>
+      <h2 class="rv">First, a lens for your business.</h2>
+      <p class="lead rv d1">Right now your business is a black box — even to you. You can feel when something’s off, but you can’t always point to <em>what</em> or <em>why</em>.</p>
+      <p class="lead rv d1">Ikigai Engine is the lens that lets you look inside. Where your time actually goes. Where money quietly leaks out. Which jobs make you money and which ones cost you. Which steps slow everything down.</p>
+      <p class="lead rv d2">Once you can see it, you can fix it — and once you can see it, we can automate it. That’s the whole idea.</p>
+      <div class="quote rv d2">“CLARITY FIRST. THEN EVERYTHING GETS EASIER.”</div>
+    </div>
+    <figure class="fig rv d2">
+      <div class="frame">
+        <svg id="lens-fig" class="draw" viewBox="0 0 480 360" role="img" aria-label="Diagram: a lens focusing a chaotic black box into an ordered grid">
+          <!-- black box -->
+          <rect class="s chalk" x="30" y="110" width="130" height="130"/>
+          <text x="30" y="98" font-size="9">YOUR BUSINESS — AS FOUND</text>
+          <path class="s faint" d="M45 130 q 20 30 -5 45 q 35 -10 40 20 q 5 -35 30 -25 q -25 -20 5 -35 q -30 12 -35 -10 q -5 25 -35 5"/>
+          <path class="s faint" d="M60 200 q 30 -15 45 10 q 10 -25 35 -12"/>
+          <circle class="s faint" cx="130" cy="140" r="9"/>
+          <circle class="s faint" cx="55" cy="215" r="6"/>
+          <!-- rays -->
+          <path class="s dash" d="M160 145 L 236 168"/>
+          <path class="s dash" d="M160 175 L 236 176"/>
+          <path class="s dash" d="M160 205 L 236 184"/>
+          <!-- lens -->
+          <ellipse class="s tape" cx="248" cy="176" rx="14" ry="52"/>
+          <text x="222" y="105" font-size="9">THE LENS</text>
+          <!-- focused rays -->
+          <path class="s dash tape" d="M260 160 L 330 172"/>
+          <path class="s dash tape" d="M260 176 L 330 176"/>
+          <path class="s dash tape" d="M260 192 L 330 180"/>
+          <!-- ordered grid -->
+          <g>
+            <rect class="s chalk" x="330" y="116" width="120" height="120"/>
+            <line class="s" x1="330" y1="156" x2="450" y2="156"/>
+            <line class="s" x1="330" y1="196" x2="450" y2="196"/>
+            <line class="s" x1="370" y1="116" x2="370" y2="236"/>
+            <line class="s" x1="410" y1="116" x2="410" y2="236"/>
+            <circle class="dot" cx="350" cy="136" r="3"/>
+            <circle class="dot" cx="390" cy="176" r="3"/>
+            <circle class="dot" cx="430" cy="216" r="3"/>
+          </g>
+          <text x="330" y="104" font-size="9">SEEN CLEARLY</text>
+          <!-- annotations -->
+          <path class="s faint" d="M390 260 L 390 290 L 300 290"/>
+          <text x="120" y="296" font-size="9">TIME · MONEY · MARGIN · BOTTLENECKS</text>
+        </svg>
+      </div>
+      <figcaption><span>FIG. 05 — LIGHT PATH, AS PROPOSED</span><span>N.T.S.</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how">
+  <p class="sheet-tag rv">SHEET 4 OF 6 — <b>METHOD OF WORKS</b></p>
+  <h2 class="rv">Three beats. That’s the whole method.</h2>
+  <p class="lead rv d1">See your business → automate the busywork → let AI do the heavy lifting. No rip-and-replace, no eighteen-month “digital transformation.”</p>
+
+  <div class="beats">
+    <article class="beat rv" id="beat1">
+      <svg class="draw" viewBox="0 0 260 130" aria-hidden="true">
+        <circle class="s chalk" cx="80" cy="62" r="34"/>
+        <circle class="s tape" cx="80" cy="62" r="20" stroke-dasharray="4 3"/>
+        <circle class="dot" cx="80" cy="62" r="3.5"/>
+        <line class="s" x1="104" y1="86" x2="128" y2="110"/>
+        <rect class="s faint" x="150" y="22" width="86" height="80"/>
+        <line class="s faint" x1="150" y1="49" x2="236" y2="49"/>
+        <line class="s faint" x1="150" y1="76" x2="236" y2="76"/>
+        <line class="s faint" x1="179" y1="22" x2="179" y2="102"/>
+        <line class="s faint" x1="208" y1="22" x2="208" y2="102"/>
+        <circle class="dot" cx="164" cy="35" r="2.5"/><circle class="dot" cx="193" cy="62" r="2.5"/><circle class="dot" cx="222" cy="89" r="2.5"/>
+      </svg>
+      <h3>1 — See it.</h3>
+      <p>No rip-and-replace. We map how you actually work today and pull your scattered information into one clear place. For the first time, you can see the whole business at a glance.</p>
+      <i class="conn" aria-hidden="true"></i>
+    </article>
+    <article class="beat rv d1" id="beat2">
+      <svg class="draw" viewBox="0 0 260 130" aria-hidden="true">
+        <g class="gear"><path class="s" d="M62 40 l5 -12 10 0 5 12 12 5 0 10 -12 5 -5 12 -10 0 -5 -12 -12 -5 0 -10 z"/><circle class="s" cx="72" cy="52" r="8"/></g>
+        <g class="gear r"><path class="s" d="M104 74 l5 -12 10 0 5 12 12 5 0 10 -12 5 -5 12 -10 0 -5 -12 -12 -5 0 -10 z"/><circle class="s" cx="114" cy="86" r="8"/></g>
+        <path class="s dash tape" d="M140 86 L 180 86 L 180 52 L 236 52"/>
+        <path class="s dash tape" d="M140 92 L 172 92 L 172 108 L 236 108"/>
+        <circle class="dot" cx="236" cy="52" r="3"/>
+        <circle class="dot" cx="236" cy="108" r="3"/>
+      </svg>
+      <h3>2 — Automate it.</h3>
+      <p>The repetitive tasks you do by hand — data entry, reports, follow-ups, moving files around — we connect and automate. The busywork starts to disappear, and the errors go with it.</p>
+      <i class="conn" aria-hidden="true"></i>
+    </article>
+    <article class="beat rv d2" id="beat3">
+      <svg class="draw" viewBox="0 0 260 130" aria-hidden="true">
+        <rect class="s faint" x="28" y="26" width="58" height="78"/>
+        <line class="s faint" x1="38" y1="44" x2="76" y2="44"/><line class="s faint" x1="38" y1="58" x2="76" y2="58"/><line class="s faint" x1="38" y1="72" x2="66" y2="72"/>
+        <path class="s" d="M118 26 C 96 26, 96 62, 118 62 C 96 62, 96 100, 118 100"/>
+        <path class="s" d="M126 26 C 148 26, 148 62, 126 62 C 148 62, 148 100, 126 100"/>
+        <circle class="dot" cx="122" cy="44" r="3"/><circle class="dot" cx="122" cy="80" r="3"/>
+        <path class="s dash tape" d="M150 62 L 190 62"/>
+        <rect class="s chalk" x="190" y="38" width="52" height="48"/>
+        <line class="s tape" x1="200" y1="54" x2="232" y2="54"/>
+        <line class="s tape" x1="200" y1="68" x2="222" y2="68"/>
+      </svg>
+      <h3>3 — Let AI handle the heavy lifting.</h3>
+      <p>We add AI tools that read your documents, quotes, and emails and pull out exactly what you need in seconds. Work that used to eat your day gets done while you focus on the decisions only you can make.</p>
+    </article>
+  </div>
+
+  <div class="result rv">
+    <p>You stop guessing and stop grinding. You run the business with a clear view — and systems doing the work behind you.</p>
+  </div>
+</section>
+
+<!-- ============ WHAT WE BUILD ============ -->
+<section id="build">
+  <p class="sheet-tag rv">SHEET 5 OF 6 — <b>BILL OF WORKS</b></p>
+  <h2 class="rv">What we build for you.</h2>
+  <p class="lead rv d1">Every business is full of work that has to happen but doesn’t need a human. We take it off your plate — and give you the view you’ve never had.</p>
+
+  <div class="bom rv d2" role="table" aria-label="Bill of works">
+    <div class="bom-row hd" role="row"><div>Part No.</div><div>Item</div><div>Description</div></div>
+    <div class="bom-row" role="row"><div class="pn">IE-100</div><div class="nm">Dashboards &amp; reporting</div><div class="ds">One screen that shows the health of your business at a glance — and the reports you dread building by hand, generated automatically.</div></div>
+    <div class="bom-row" role="row"><div class="pn">IE-200</div><div class="nm">Workflow automation</div><div class="ds">The whole process, from first inquiry to final invoice, connected and flowing — instead of stitched together by memory and manual handoffs.</div></div>
+    <div class="bom-row" role="row"><div class="pn">IE-300</div><div class="nm">AI document &amp; data tools</div><div class="ds">Custom tools that read your quotes, emails, and documents and pull out exactly what you need — in seconds, not hours.</div></div>
+    <div class="bom-row" role="row"><div class="pn">IE-400</div><div class="nm">Custom internal tools</div><div class="ds">The thing you wish existed but no off-the-shelf software does — built for the way you actually work.</div></div>
+    <div class="bom-row" role="row"><div class="pn">IE-500</div><div class="nm">Operations consulting</div><div class="ds">Sometimes the fix isn’t software, it’s a smarter process. We’ll tell you the truth either way.</div></div>
+  </div>
+</section>
+
+<!-- ============ BEFORE / AFTER ============ -->
+<section id="revisions">
+  <p class="sheet-tag rv">SHEET 6 OF 6 — <b>REVISION HISTORY</b></p>
+  <h2 class="rv">The difference clarity and automation make.</h2>
+  <div class="revs">
+    <div class="rev a rv d1">
+      <div class="rhd"><span>REV. A — AS-BUILT</span><span>TODAY</span></div>
+      <ul>
+        <li>Numbers scattered across spreadsheets, emails, and your head</li>
+        <li>Hours spent rebuilding the same reports by hand</li>
+        <li>Reading every document and quote yourself</li>
+        <li>Errors from copying data between files</li>
+        <li>“I think we made money on that job…”</li>
+        <li>Buried in the day-to-day, no time to plan</li>
+      </ul>
+    </div>
+    <div class="rev b rv d2">
+      <div class="rhd"><span>REV. B — PROPOSED</span><span>WITH IKIGAI ENGINE</span></div>
+      <ul>
+        <li>One clear view of the whole business</li>
+        <li>Reports that build themselves</li>
+        <li>AI reads them and hands you the answer</li>
+        <li>Information flows automatically, error-free</li>
+        <li>“Here’s exactly what we made — and why”</li>
+        <li>Time and clarity to actually run the business</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <p class="sheet-tag rv">APPENDIX A — <b>DRAWN BY</b></p>
+  <div class="about">
+    <div>
+      <h2 class="rv">Built by an operator, not a tech vendor.</h2>
+      <div class="drawnby rv d2">
+        SIGNED: <b>THE OPERATOR</b><br>
+        FIELD EXPERIENCE: <b>HOSPITALITY → CONSTRUCTION</b><br>
+        NATIVE LANGUAGE: <b>OPERATIONS, NOT JARGON</b><br>
+        TOOLS TESTED: <b>ON REAL PROJECTS, DAILY</b>
+      </div>
+    </div>
+    <div class="copy">
+      <p class="rv d1">I didn’t come from Silicon Valley. I came from the front desk and the field — years running operations in hospitality, then in construction, where the information is messy, the margins are tight, and “the system” is usually a spreadsheet and a lot of remembering.</p>
+      <p class="rv d1">I got tired of flying blind and doing everything by hand, so I built tools to fix it for my own work — automations and AI systems that now get used every day to estimate, buy out, and manage real projects. Ikigai Engine is me doing the same thing for businesses like yours.</p>
+      <p class="rv d2">I speak operations, not jargon. I know what it’s like to be the person holding it all together. <strong>And I build things that work in the real world — because that’s the only place I’ve ever worked.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section id="audit" class="cta">
+  <div class="stamp" id="stamp">Approved for automation</div>
+  <h2 class="rv">Let’s see what’s hiding in your business — and what we can automate first.</h2>
+  <p class="lead rv d1">Start with a free operations audit. In 30 minutes, we’ll find the spots where you’re losing time, repeating yourself, or guessing when you should know — and point to the work we can take off your plate first. No pressure, no jargon — just a clear picture of what’s possible.</p>
+  <div class="cta-actions rv d2">
+    <a class="btn" href="mailto:hello@ikigaiengine.com?subject=Free%20operations%20audit">Book your free audit</a>
+    <a class="btn ghost" href="mailto:hello@ikigaiengine.com?subject=Consult">Schedule a consult</a>
+  </div>
+  <p class="cta-sub rv d2">Prefer to talk it through first? A consult works too.</p>
+</section>
+
+<footer>
+  <div class="fblock">
+    <div><span>Project</span><b>Ikigai Engine — operations clarity, automation &amp; AI for small business</b></div>
+    <div><span>Drawing</span><b>IE-OPS-001, REV C</b></div>
+    <div><span>Sheets</span><b>6 of 6 — complete set</b></div>
+    <div><span>Colophon</span><a href="guide.html">How this site was built →</a><br><a href="../index.html">All five studies →</a></div>
+  </div>
+  <div class="fbase">
+    <span>© <span id="yr">2026</span> Ikigai Engine. Clarity first. Then everything gets easier.</span>
+    <span>NOT FOR CONSTRUCTION — FOR RUNNING THE BUSINESS.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  document.getElementById('dwg-date').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'2-digit'}).toUpperCase();
+
+  // --- reveal on scroll ---
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  if(reduce){ document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); }); }
+
+  // --- self-drawing SVGs ---
+  document.querySelectorAll('svg.draw').forEach(function(svg){
+    var strokes = svg.querySelectorAll('.s');
+    if(reduce) return;
+    strokes.forEach(function(p,i){
+      var len = 0;
+      try{ len = p.getTotalLength ? p.getTotalLength() : 0; }catch(err){ len = 0; }
+      if(!len){ // rects/lines in some engines
+        var bb = p.getBBox ? p.getBBox() : {width:100,height:100};
+        len = 2*(bb.width+bb.height) || 300;
+      }
+      p.style.strokeDasharray = len + ' ' + len;
+      p.style.strokeDashoffset = len;
+      p.style.transitionDelay = (i*0.045)+'s';
+    });
+    var dio = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          strokes.forEach(function(p){ p.style.strokeDashoffset = 0; });
+          // restore animated dashes after draw
+          setTimeout(function(){
+            svg.querySelectorAll('.dash').forEach(function(p){
+              p.style.transition='none'; p.style.strokeDasharray='5 5'; p.style.strokeDashoffset='';
+            });
+          },2400);
+          dio.unobserve(svg);
+        }
+      });
+    },{threshold:.3});
+    dio.observe(svg);
+  });
+
+  // --- crosshair readout (fine pointers only) ---
+  var xh = document.querySelector('.xhair');
+  if(xh && matchMedia('(pointer:fine)').matches && !reduce){
+    var v = xh.querySelector('.v'), h = xh.querySelector('.h'), co = xh.querySelector('.co');
+    var raf = null, mx = 0, my = 0;
+    addEventListener('mousemove',function(e){
+      mx = e.clientX; my = e.clientY;
+      xh.classList.add('on');
+      if(!raf) raf = requestAnimationFrame(function(){
+        raf = null;
+        v.style.left = mx+'px'; h.style.top = my+'px';
+        co.style.left = mx+'px'; co.style.top = my+'px';
+        var flipX = mx > innerWidth - 160, flipY = my > innerHeight - 60;
+        co.style.transform = 'translate('+(flipX?'calc(-100% - 14px)':'14px')+','+(flipY?'calc(-100% - 14px)':'14px')+')';
+        co.textContent = 'X '+String(mx).padStart(4,'0')+' · Y '+String(my + Math.round(scrollY)).padStart(4,'0');
+      });
+    },{passive:true});
+  } else if(xh){ xh.remove(); }
+
+  // --- stamp ---
+  var stamp = document.getElementById('stamp');
+  if(stamp){
+    var sio = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ setTimeout(function(){ stamp.classList.add('in'); }, 350); sio.unobserve(stamp); }
+      });
+    },{threshold:.6});
+    sio.observe(stamp);
+  }
+})();
+</script>
+</body>
+</html>

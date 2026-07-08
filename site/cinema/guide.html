@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How it was built — From Noise to Signal</title>
+<meta name="description" content="A build guide for the cinematic Ikigai Engine site: 15,000 morphing WebGL particles, scroll-driven storytelling, custom shaders, and a letterbox opening.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%2306080F'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23E8B34B' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23E8B34B'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/cormorant.css">
+<link rel="stylesheet" href="../fonts/outfit.css">
+<style>
+:root{--bg:#06080F;--ink:#EDF1F7;--ink-soft:#AEBACC;--ink-faint:#66738A;--gold:#E8B34B;
+--serif:'Cormorant Garamond',Georgia,serif;--sans:'Outfit',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-x:clip}
+body{background:radial-gradient(90% 60% at 50% 0%,rgba(34,48,80,.4),transparent 65%),var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;font-size:16.5px;line-height:1.75}
+main{max-width:760px;margin:0 auto;padding:70px clamp(20px,5vw,40px) 110px}
+.crumb{font-size:11px;letter-spacing:.3em;text-transform:uppercase}
+.crumb a{color:var(--gold);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(34px,6.5vw,52px);line-height:1.1;margin:20px 0 12px}
+h1 i{color:var(--gold)}
+.sub{color:var(--ink-soft);max-width:56ch}
+h2{font-family:var(--serif);font-weight:500;font-size:26px;margin:56px 0 12px;padding-top:26px;border-top:1px solid rgba(174,186,204,.16)}
+p{color:var(--ink-soft);margin:12px 0;max-width:66ch}
+strong{color:var(--ink);font-weight:400}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.84em;background:rgba(174,186,204,.12);padding:2px 6px;border-radius:3px;color:var(--ink)}
+pre{background:rgba(2,4,10,.8);border:1px solid rgba(174,186,204,.16);padding:18px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.6;border-radius:4px}
+pre code{background:none;padding:0;color:var(--ink-soft)}
+ul{margin:12px 0 12px 22px;color:var(--ink-soft)}
+li{margin:8px 0}
+.meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:28px;border:1px solid rgba(174,186,204,.16);padding:16px 22px;font-size:13px;border-radius:4px}
+.meta span{color:var(--ink-faint);display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:2px}
+a{color:var(--gold)}
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="index.html">← Back to the site</a> · <a href="../index.html">All five studies</a></p>
+  <h1>How <i>“From Noise to Signal”</i> was built</h1>
+  <p class="sub">A scroll-driven WebGL film where fifteen thousand particles act out the story — chaos, lens, flow, order, and finally the brand itself.</p>
+  <div class="meta">
+    <div><span>Stack</span>HTML + CSS + Three.js (vendored)</div>
+    <div><span>Particles</span>15,000 desktop / 7,000 mobile</div>
+    <div><span>Shaders</span>Custom GLSL vertex + fragment</div>
+    <div><span>Images used</span>None</div>
+  </div>
+
+  <h2>The concept</h2>
+  <p>Ikigai Engine's promise is turning noise into signal, so the site literally performs it. One fixed full-screen canvas holds a single particle system, and as you scroll through six "acts," the particles morph between five formations that mirror the copy: a <strong>chaotic nebula</strong> (the fog you run your business in) → a <strong>lens iris</strong> (see it) → <strong>braided flow streams</strong> (automate it) → an <strong>ordered lattice</strong> (information in its place) → the word <strong>IKIGAI</strong> (the finale signature). The prose scrolls normally in front of it, so the story reads even if you never notice the choreography — but you notice.</p>
+
+  <h2>Morphing 15,000 particles</h2>
+  <p>Every formation is precomputed on the CPU as a <code>Float32Array</code> of XYZ targets and uploaded once as vertex attributes (<code>aP0…aP4</code>). The GPU does all the movement: a single uniform <code>uSeg</code> (e.g. <code>2.35</code> = 35% of the way from formation 2 to 3) drives a smoothstep mix in the vertex shader. No per-frame buffer updates, so it runs at 60fps even on phones.</p>
+<pre><code>float f = floor(uSeg), t = fract(uSeg);
+// per-particle stagger so morphs ripple instead of snapping
+float tt = clamp(t*1.35 - aSeed*.35, 0., 1.);
+tt = tt*tt*(3.-2.*tt);                    // smoothstep
+vec3 p = mix(pick(f), pick(f+1.), tt);
+p += breathingNoise(aSeed, uTime);        // idle life</code></pre>
+  <p>Each particle also carries a random <code>aSeed</code>, used three ways: to stagger the morph (particles leave in waves, like a murmuration), to vary point size, and to animate a tiny idle drift so the system never looks frozen. Color cross-fades per formation — cold slate for the fog, cyan for the lens, amber for the machine, mint for the lattice, gold for the finale — with additive blending and a soft radial falloff in the fragment shader so overlapping points glow like film grain.</p>
+
+  <h2>The word finale</h2>
+  <p>The "IKIGAI" formation is sampled from a hidden 2D canvas: draw the word with <code>fillText</code>, read back <code>getImageData</code>, keep every 2nd pixel above a brightness threshold, and map those pixel coordinates into world space. Because target positions are just another attribute, the same shader that scattered the nebula also spells the logotype. On phones the sampling box is scaled down so the word fits a narrow viewport.</p>
+
+  <h2>Scroll direction</h2>
+  <p>No scroll-jacking. The page scrolls natively; a tiny function maps the viewport's center against each act's midpoint and interpolates piecewise between formation indices. The render loop then eases toward it (<code>cur += (target-cur)*.085</code>) so fast flicks settle cinematically rather than teleporting. The camera dollies in slightly across the film and follows the mouse a few degrees for parallax.</p>
+
+  <h2>The cinema dressing</h2>
+  <ul>
+    <li><strong>Letterbox opening</strong> — two black bars ease off-screen 150ms after load, and the header/nav fades in late, like titles.</li>
+    <li><strong>Film grain</strong> — a fixed overlay using an SVG <code>feTurbulence</code> data-URI with <code>mix-blend-mode: overlay</code>. Costs one element, sells the "shot on film" texture.</li>
+    <li><strong>Acts, not sections</strong> — Roman-numeral ghost numerals (<code>-webkit-text-stroke</code> outlines), a gold progress rail with chapter dots, italic Cormorant Garamond against light Outfit.</li>
+    <li><strong>Type pairing</strong> — the serif's italics carry emotion ("<i>clearly</i>", "<i>for your business</i>"); the geometric sans keeps the operator voice matter-of-fact.</li>
+  </ul>
+
+  <h2>Performance &amp; fallbacks</h2>
+  <ul>
+    <li>Pixel ratio capped at 1.5× desktop; particle count halved on mobile; rendering pauses when the tab is hidden.</li>
+    <li>If WebGL is unavailable or <code>prefers-reduced-motion</code> is set, the canvas is removed and a layered radial-gradient backdrop takes over — every word of the page still works.</li>
+    <li>Three.js is self-hosted (module + core, ~150KB gzipped) so the site has zero third-party requests.</li>
+  </ul>
+
+  <h2>Lessons if you build one</h2>
+  <ul>
+    <li>Put morph targets in attributes and drive everything with one uniform — the CPU should whisper, not shout.</li>
+    <li>Stagger per-particle timing with a seed; simultaneous motion reads mechanical, rippled motion reads alive.</li>
+    <li>Let text scroll normally on top of the film. Scroll-jacking is where cinematic sites go to die on phones.</li>
+    <li>Design the fallback first: if the site converts with the canvas deleted, the canvas is pure upside.</li>
+  </ul>
+</main>
+</body>
+</html>

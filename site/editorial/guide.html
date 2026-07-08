@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colophon — An Essay on Clarity</title>
+<meta name="description" content="A build guide for the editorial Ikigai Engine site: variable-font typography, drop caps, a print-inspired grid, and restraint as a design system.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F6F1E7'/%3E%3Ctext x='16' y='23' font-family='Georgia' font-size='20' font-style='italic' text-anchor='middle' fill='%23191713'%3EI%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/fraunces.css">
+<link rel="stylesheet" href="../fonts/inter.css">
+<style>
+:root{--paper:#F6F1E7;--ink:#191713;--ink-soft:#4A443B;--faint:#8B8376;--hair:rgba(25,23,19,.16);--green:#2E4B3F;
+--serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17.5px;line-height:1.75;font-weight:380;font-optical-sizing:auto}
+main{max-width:700px;margin:0 auto;padding:66px clamp(20px,5vw,40px) 110px}
+.crumb{font-family:var(--sans);font-size:10px;letter-spacing:.32em;text-transform:uppercase}
+.crumb a{color:var(--green);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+h1{font-size:clamp(32px,6vw,48px);font-weight:340;line-height:1.12;margin:22px 0 12px;letter-spacing:-.01em}
+h1 em{color:var(--green)}
+.sub{color:var(--ink-soft);max-width:52ch}
+h2{font-size:24px;font-weight:420;margin:54px 0 12px;padding-top:26px;border-top:1px solid var(--hair)}
+p{color:var(--ink-soft);margin:12px 0;max-width:64ch}
+strong{font-weight:500;color:var(--ink)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8em;background:rgba(25,23,19,.07);padding:2px 6px;border-radius:3px;color:var(--ink)}
+pre{background:#14120E;color:#D8D2C4;padding:18px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+ul{margin:12px 0 12px 22px;color:var(--ink-soft)}
+li{margin:8px 0}
+.meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:28px;border-top:1px solid var(--ink);border-bottom:1px solid var(--hair);padding:16px 4px;font-family:var(--sans);font-size:12.5px}
+.meta span{color:var(--faint);display:block;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;margin-bottom:2px}
+a{color:var(--green)}
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="index.html">← Back to the essay</a> · <a href="../index.html">All five studies</a></p>
+  <h1>Colophon — how <em>“An Essay on Clarity”</em> was set</h1>
+  <p class="sub">An exercise in restraint: one serif, one accent color, and typography doing all of the work a hero image usually pretends to do.</p>
+  <div class="meta">
+    <div><span>Stack</span>HTML + CSS + 30 lines of JS</div>
+    <div><span>Faces</span>Fraunces (variable) &amp; Inter</div>
+    <div><span>Colors</span>Paper, ink, bottle green</div>
+    <div><span>Images used</span>None</div>
+  </div>
+
+  <h2>The concept</h2>
+  <p>Four of the five studies in this series shout. This one lowers its voice on purpose — the visual argument is that a company selling <em>clarity</em> should feel like a beautifully set essay: cover, preface, three chapters, an interlude, and an invitation. Every landing-page convention is translated into a print convention. The pain list becomes a numbered <strong>litany</strong> (i–v, hanging Roman numerals). Before/after becomes a two-column <strong>ledger</strong> with hairline rules. The founder story becomes <strong>“The operator”</strong> with a pull quote and a signature line. The CTA is an <strong>invitation</strong>, full-bleed in ink.</p>
+
+  <h2>Typography is the whole design</h2>
+  <p><strong>Fraunces</strong> is a variable font with an optical-size axis, which is what makes this page feel expensive. With <code>font-optical-sizing: auto</code>, the same file renders the 108px cover line with high-contrast, tight-jointed “display” letterforms, while body text at 18px gets sturdier, more readable shapes. One font file, two personalities.</p>
+<pre><code>body{
+  font-family:'Fraunces', Georgia, serif;
+  font-optical-sizing:auto;   /* opsz 9 → 144 */
+  font-weight:380;            /* between Regular and Book */
+}</code></pre>
+  <p>Everything else is spacing discipline: a 660px measure for prose (~62 characters), Inter only for tiny meta labels tracked out to <code>.4em</code>, italics reserved for meaning (never decoration), and a strict scale of hairline rules — <code>1px solid</code> ink for major boundaries, 16%-alpha hairlines inside components.</p>
+
+  <h2>Print furniture, rebuilt in CSS</h2>
+  <ul>
+    <li><strong>Drop cap</strong> — the preface opens with a three-line initial via <code>initial-letter: 3</code>, with a float-based fallback inside <code>@supports not (…)</code> for engines that lack it.</li>
+    <li><strong>Chapter numerals</strong> — enormous outlined Roman numerals (<code>-webkit-text-stroke</code> over paper-colored fill) that sit <code>position: sticky</code> beside the prose on desktop and collapse above it on phones.</li>
+    <li><strong>Folio &amp; dinkus</strong> — the “AN ESSAY ON CLARITY · MMXXVI” line with flanking rules is a flexbox with <code>::before/::after</code> bars; section breaks use a three-diamond dinkus (✦ ✦ ✦), the classic typographic scene-change.</li>
+    <li><strong>The ledger</strong> — before/after rows where the “before” column is struck through in faded ink. On phones the grid collapses to stacked cells that generate their own “BEFORE —” / “AFTER —” labels from CSS <code>::before</code> content, so the table never squishes.</li>
+  </ul>
+
+  <h2>Motion you barely notice</h2>
+  <p>There are exactly three moving things: a 2px reading-progress bar in green, a slow 1.3s fade-and-rise on scroll (single IntersectionObserver, staggered with delay classes), and the masthead gaining a translucent paper background after 30px of scroll. Buttons animate <code>letter-spacing</code> on hover — text that breathes rather than blocks that bounce. All of it collapses under <code>prefers-reduced-motion</code>.</p>
+
+  <h2>Why restraint converts</h2>
+  <p>The page still hits every beat a landing page needs — promise, pain, method, proof, bio, ask — but the calm presentation implies the product: <em>this company will make things feel like this page feels.</em> The two CTAs (ink button on paper; paper button on ink at the close) are the only full-contrast elements, so the eye lands on them without a single animation begging for it.</p>
+
+  <h2>Lessons if you build one</h2>
+  <ul>
+    <li>A variable font with an optical axis is the cheapest “premium” upgrade in web design — one file, display and text cuts.</li>
+    <li>Pick a measure (55–65ch) first and let it dictate every container width.</li>
+    <li>If you delete an element and the page gets calmer without losing information, it was never design — it was noise.</li>
+    <li>Minimal is unforgiving: with nothing to hide behind, a single bad wrap or crowded margin reads as a defect. Screenshot at phone width relentlessly.</li>
+  </ul>
+</main>
+</body>
+</html>

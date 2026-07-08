@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKIGAI ENGINE — Run the business. Don’t let it run you.</title>
+<meta name="description" content="See your business clearly. Automate the busywork. Let AI do the heavy lifting. Ikigai Engine — book a free operations audit.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0B0B'/%3E%3Ctext x='16' y='24' font-family='Arial Black' font-size='22' font-weight='900' text-anchor='middle' fill='%23D8F34E'%3EI%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/anybody.css">
+<link rel="stylesheet" href="../fonts/space-mono.css">
+<style>
+:root{
+  --bg:#0B0B0B;
+  --ink:#F2F1EC;
+  --dim:#8F8E86;
+  --acid:#D8F34E;
+  --line:rgba(242,241,236,.16);
+  --disp:'Anybody',Impact,system-ui,sans-serif;
+  --mono:'Space Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:16px;line-height:1.65;overflow-x:clip}
+::selection{background:var(--acid);color:#0B0B0B}
+h1,h2,h3,.disp{font-family:var(--disp);font-weight:800;text-transform:uppercase;line-height:.92;letter-spacing:-.01em}
+
+/* header */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:40;mix-blend-mode:difference;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px clamp(16px,3.5vw,40px);
+}
+.mark{font-family:var(--disp);font-weight:900;font-size:17px;letter-spacing:.02em;color:#fff;text-decoration:none;text-transform:uppercase}
+header nav{display:flex;gap:22px;align-items:center;font-size:12px;text-transform:uppercase;letter-spacing:.12em}
+header nav a{color:#fff;text-decoration:none;opacity:.75}
+header nav a:hover{opacity:1}
+@media (max-width:760px){header nav a.hk{display:none}}
+
+.btn{
+  display:inline-block;font-family:var(--disp);font-weight:800;text-transform:uppercase;
+  background:var(--acid);color:#0B0B0B;text-decoration:none;
+  font-size:15px;letter-spacing:.02em;padding:15px 28px;
+  transition:transform .15s;position:relative;
+}
+.btn:hover{transform:scale(1.04) rotate(-1deg)}
+.btn:active{transform:scale(.98)}
+.btn.dark{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn.dark:hover{background:var(--ink);color:#0B0B0B}
+
+/* hero */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:110px clamp(16px,3.5vw,40px) 40px;position:relative}
+.hero .line{display:block;overflow:hidden}
+.hero .line span{
+  display:block;font-family:var(--disp);font-weight:900;text-transform:uppercase;
+  font-size:clamp(52px,12.5vw,190px);line-height:.9;letter-spacing:-.02em;
+  transform:translateY(110%);animation:slam .8s cubic-bezier(.2,.8,.2,1) forwards;
+  font-variation-settings:'wdth' 92;
+  will-change:transform;
+}
+.hero .line:nth-child(2) span{animation-delay:.12s;color:var(--acid)}
+.hero .line:nth-child(3) span{animation-delay:.24s}
+@keyframes slam{to{transform:translateY(0)}}
+.hero .sub{
+  margin-top:34px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;
+}
+.hero .sub p{max-width:56ch;color:var(--dim);font-size:15px}
+.hero .sub p b{color:var(--ink);font-weight:700}
+.hero .cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.hero .meta{position:absolute;top:96px;right:clamp(16px,3.5vw,40px);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:2}
+@media (max-width:900px){
+  .hero .sub{grid-template-columns:1fr}
+  .hero .meta{display:none}
+}
+
+/* marquee */
+.mq{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);overflow:hidden;background:var(--acid);color:#0B0B0B}
+.mq.rev{background:var(--bg);color:var(--ink);border-top:0}
+.mq .track{display:flex;width:max-content;will-change:transform}
+.mq span{
+  font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(22px,3.4vw,44px);
+  padding:12px 0;white-space:nowrap;letter-spacing:0;
+}
+.mq i{font-style:normal;margin:0 22px;opacity:.55}
+
+/* sections */
+section{padding:clamp(80px,11vw,150px) clamp(16px,3.5vw,40px);position:relative}
+.tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--acid);
+  border:1px solid rgba(216,243,78,.4);padding:7px 14px;margin-bottom:34px;
+}
+.tag::before{content:"";width:8px;height:8px;background:var(--acid)}
+
+/* manifesto / problem */
+.mani .big{
+  font-family:var(--disp);font-weight:800;text-transform:uppercase;
+  font-size:clamp(30px,6.2vw,84px);line-height:1.02;letter-spacing:-.015em;max-width:16ch;
+  font-variation-settings:'wdth' 88;
+}
+.mani .big em{font-style:normal;color:var(--acid)}
+.griefs{margin-top:56px;border-top:1px solid var(--line);counter-reset:g}
+.grief{
+  display:grid;grid-template-columns:minmax(54px,90px) 1fr;gap:18px;align-items:center;
+  padding:22px 0;border-bottom:1px solid var(--line);cursor:default;
+}
+.grief::before{
+  counter-increment:g;content:"0" counter(g);
+  font-family:var(--disp);font-weight:900;font-size:clamp(24px,3.4vw,44px);
+  color:transparent;-webkit-text-stroke:1.5px var(--dim);
+  transition:color .3s,-webkit-text-stroke-color .3s;
+}
+.grief p{
+  font-family:var(--disp);font-weight:600;text-transform:uppercase;
+  font-size:clamp(17px,2.6vw,32px);line-height:1.05;color:var(--dim);
+  font-variation-settings:'wdth' 90;
+  transition:color .3s,font-variation-settings .5s cubic-bezier(.2,.8,.2,1),transform .3s;
+}
+.grief:hover::before{color:var(--acid);-webkit-text-stroke-color:var(--acid)}
+.grief:hover p{color:var(--ink);font-variation-settings:'wdth' 118;transform:translateX(6px)}
+.mani .coda{margin-top:36px;color:var(--dim);max-width:60ch;font-size:15px}
+.mani .coda b{color:var(--acid);font-weight:700}
+
+/* method — stretch words */
+.method{padding-top:clamp(60px,8vw,100px)}
+.stretch-block{padding:clamp(44px,6vw,80px) 0;border-bottom:1px solid var(--line)}
+.stretch-block:first-of-type{border-top:1px solid var(--line)}
+.stretch-block .no{font-size:11px;letter-spacing:.26em;color:var(--acid);margin-bottom:12px;display:block}
+.stretch{
+  font-family:var(--disp);font-weight:900;text-transform:uppercase;display:block;
+  font-size:clamp(40px,9.4vw,150px);line-height:.92;letter-spacing:-.02em;
+  font-variation-settings:'wdth' 60;white-space:nowrap;
+  will-change:font-variation-settings;
+}
+@media (max-width:700px){.stretch{font-size:clamp(30px,9vw,44px)}}
+.stretch-block .exp{display:grid;grid-template-columns:minmax(0,.55fr) minmax(0,.45fr);gap:24px;margin-top:22px}
+.stretch-block .exp p{color:var(--dim);font-size:14.5px;max-width:52ch}
+.stretch-block .exp p b{color:var(--ink)}
+.stretch-block .exp .lbl{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);opacity:.85}
+@media (max-width:820px){.stretch-block .exp{grid-template-columns:1fr;gap:10px}}
+
+/* two ways */
+.ways{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line);border:1px solid var(--line);margin-top:54px}
+.way{background:var(--bg);padding:clamp(26px,4vw,44px)}
+.way h3{font-size:clamp(22px,2.6vw,32px);margin-bottom:14px;font-variation-settings:'wdth' 95}
+.way h3 i{font-style:normal;color:var(--acid);margin-right:10px}
+.way p{color:var(--dim);font-size:14.5px}
+.way p b{color:var(--ink)}
+@media (max-width:760px){.ways{grid-template-columns:1fr}}
+
+/* build index */
+.idx{margin-top:54px;border-top:1px solid var(--line)}
+.row{
+  display:grid;grid-template-columns:minmax(64px,110px) minmax(0,1fr);gap:18px;align-items:baseline;
+  padding:26px 0;border-bottom:1px solid var(--line);text-decoration:none;
+}
+.row .n{font-size:12px;letter-spacing:.2em;color:var(--dim)}
+.row h3{
+  font-size:clamp(24px,4.4vw,58px);color:var(--ink);
+  font-variation-settings:'wdth' 78;line-height:1;
+  transition:font-variation-settings .5s cubic-bezier(.2,.8,.2,1),color .3s,letter-spacing .5s;
+}
+.row:hover h3{font-variation-settings:'wdth' 112;color:var(--acid)}
+.row p{grid-column:2;color:var(--dim);font-size:14px;max-width:64ch;margin-top:8px}
+
+/* before/after acid panel */
+.ba{background:var(--acid);color:#0B0B0B}
+.ba .tag{color:#0B0B0B;border-color:rgba(11,11,11,.4)}
+.ba .tag::before{background:#0B0B0B}
+.ba h2{font-size:clamp(32px,6vw,80px);max-width:14ch;font-variation-settings:'wdth' 88}
+.swap{margin-top:48px;border-top:2px solid #0B0B0B}
+.swap .pair{
+  display:grid;grid-template-columns:1fr 1fr;border-bottom:2px solid #0B0B0B;
+}
+.swap .pair>div{padding:18px clamp(4px,1.5vw,20px)}
+.swap .pair>div:first-child{border-right:2px solid #0B0B0B;text-decoration:line-through;text-decoration-thickness:2px;opacity:.6;font-size:14px}
+.swap .pair>div:last-child{font-family:var(--disp);font-weight:700;text-transform:uppercase;font-size:clamp(14px,1.75vw,22px);line-height:1.1;font-variation-settings:'wdth' 92}
+@media (max-width:700px){
+  .swap .pair{grid-template-columns:1fr}
+  .swap .pair>div:first-child{border-right:0;border-bottom:1px dashed rgba(11,11,11,.4);padding-bottom:10px}
+}
+
+/* operator */
+.op .quote{
+  font-family:var(--disp);font-weight:800;text-transform:uppercase;
+  font-size:clamp(28px,5.4vw,72px);line-height:1;max-width:18ch;letter-spacing:-.015em;
+  font-variation-settings:'wdth' 86;
+}
+.op .quote em{font-style:normal;color:var(--acid)}
+.op .grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,54px);margin-top:44px}
+.op .grid p{color:var(--dim);font-size:14.5px;margin-bottom:14px}
+.op .grid p b{color:var(--ink)}
+.op .stamp-line{margin-top:26px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--acid)}
+@media (max-width:760px){.op .grid{grid-template-columns:1fr}}
+
+/* CTA */
+.cta{padding-bottom:40px}
+.cta .whisper{color:var(--dim);font-size:14px;max-width:60ch;margin-bottom:40px}
+.cta .whisper b{color:var(--ink)}
+.mega{
+  display:block;text-decoration:none;background:var(--acid);color:#0B0B0B;
+  padding:clamp(34px,6vw,72px) clamp(20px,4vw,48px);
+  position:relative;overflow:hidden;
+}
+.mega .disp{
+  display:block;font-size:clamp(34px,7.4vw,110px);line-height:.94;letter-spacing:-.02em;
+  font-variation-settings:'wdth' 88;transition:font-variation-settings .6s cubic-bezier(.2,.8,.2,1);
+}
+.mega:hover .disp{font-variation-settings:'wdth' 104}
+.mega .mrow{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:14px;flex-wrap:wrap}
+.mega .mrow span{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+.mega .arrow{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4vw,54px);line-height:1;transition:transform .35s}
+.mega:hover .arrow{transform:translateX(14px)}
+.cta .alt-line{margin-top:22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--dim)}
+.cta .alt-line a{color:var(--ink)}
+.cta .alt-line a:hover{color:var(--acid)}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:26px clamp(16px,3.5vw,40px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+footer a{color:var(--ink);text-decoration:none}
+footer a:hover{color:var(--acid)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.6,.2,1),transform .8s cubic-bezier(.2,.6,.2,1)}
+.rv.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<header>
+  <a class="mark" href="#top">Ikigai—Engine</a>
+  <nav>
+    <a class="hk" href="#griefs">The grind</a>
+    <a class="hk" href="#method">Method</a>
+    <a class="hk" href="#build">Build</a>
+    <a class="hk" href="guide.html">How it’s built</a>
+    <a href="#audit" style="opacity:1;color:#fff;text-decoration:underline;text-underline-offset:4px">Free audit ↗</a>
+  </nav>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero">
+  <div class="meta" aria-hidden="true">
+    OPERATIONS × AUTOMATION × AI<br>
+    FOR SMALL BUSINESS<br>
+    EST. THE FRONT DESK
+  </div>
+  <h1 aria-label="See it. Automate it. Let AI lift.">
+    <span class="line" aria-hidden="true"><span data-scramble>SEE IT.</span></span>
+    <span class="line" aria-hidden="true"><span data-scramble>AUTOMATE IT.</span></span>
+    <span class="line" aria-hidden="true"><span data-scramble>LET AI LIFT.</span></span>
+  </h1>
+  <div class="sub">
+    <p><b>See your business clearly. Then let it run itself.</b> We turn the scattered, messy work you do by hand into clear answers, automated workflows, and AI tools that do the heavy lifting. 30 minutes, no tech jargon — you’ll leave knowing exactly where you’re losing time.</p>
+    <div class="cta-row">
+      <a class="btn" href="#audit">Book a free operations audit</a>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEES -->
+<div class="mq" aria-hidden="true"><div class="track" data-mq="1"><span>SEE IT <i>●</i> AUTOMATE IT <i>●</i> LET AI DO THE HEAVY LIFTING <i>●</i> CLARITY FIRST <i>●</i> </span><span>SEE IT <i>●</i> AUTOMATE IT <i>●</i> LET AI DO THE HEAVY LIFTING <i>●</i> CLARITY FIRST <i>●</i> </span></div></div>
+<div class="mq rev" aria-hidden="true"><div class="track" data-mq="-1"><span>NO JARGON <i>○</i> NO RIP-AND-REPLACE <i>○</i> BUILT BY AN OPERATOR <i>○</i> REAL WORLD ONLY <i>○</i> </span><span>NO JARGON <i>○</i> NO RIP-AND-REPLACE <i>○</i> BUILT BY AN OPERATOR <i>○</i> REAL WORLD ONLY <i>○</i> </span></div></div>
+
+<!-- MANIFESTO -->
+<section class="mani" id="griefs">
+  <span class="tag rv">The grind — status: unpaid</span>
+  <p class="big rv">You’re running the business. But can you actually <em>see it</em>?</p>
+  <div class="griefs">
+    <div class="grief rv"><p>The same report, rebuilt by hand, every week</p></div>
+    <div class="grief rv"><p>Numbers copied between files — pray for no typos</p></div>
+    <div class="grief rv"><p>You read every quote &amp; email, because no one else can</p></div>
+    <div class="grief rv"><p>“Are we even making money on this?” — unknown</p></div>
+    <div class="grief rv"><p>Doing the work instead of running the business</p></div>
+  </div>
+  <p class="coda rv">It’s not that you’re disorganized. Nobody ever built you the tools to see clearly, or the systems to stop doing it all manually. <b>That’s both things we fix.</b></p>
+</section>
+
+<!-- METHOD -->
+<section class="method" id="method">
+  <span class="tag rv">The method — three moves</span>
+  <div class="stretch-block">
+    <span class="no">01 / SEE</span>
+    <span class="stretch" data-stretch>SEE IT.</span>
+    <div class="exp">
+      <p><b>A lens for your business.</b> Right now it’s a black box — even to you. We map how you actually work, pull the scattered information into one clear place, and for the first time you see the whole business at a glance: where time goes, where money leaks, which jobs pay.</p>
+      <p class="lbl">No rip-and-replace. Your tools, connected.</p>
+    </div>
+  </div>
+  <div class="stretch-block">
+    <span class="no">02 / AUTOMATE</span>
+    <span class="stretch" data-stretch>AUTOMATE IT.</span>
+    <div class="exp">
+      <p><b>The busywork isn’t yours anymore.</b> Data entry, reports, follow-ups, moving files — connected and automated. The Monday report builds itself. The handoffs stop depending on memory. The errors disappear with the retyping.</p>
+      <p class="lbl">Hours back, every single week.</p>
+    </div>
+  </div>
+  <div class="stretch-block">
+    <span class="no">03 / DELEGATE</span>
+    <span class="stretch" data-stretch>LET AI LIFT.</span>
+    <div class="exp">
+      <p><b>AI reads the pile so you don’t.</b> Documents, quotes, emails — read, sorted, and distilled to exactly what you need in seconds. Your people only touch the parts that need real judgment; you focus on decisions only you can make.</p>
+      <p class="lbl">You stop guessing. You stop grinding.</p>
+    </div>
+  </div>
+
+  <div class="ways">
+    <div class="way rv">
+      <h3><i>A</i>Workflow automation</h3>
+      <p>We connect the tools and steps you already use so information flows on its own. <b>Automatic handoffs. Self-building reports. Data that moves itself — without the typos.</b></p>
+    </div>
+    <div class="way rv">
+      <h3><i>B</i>AI integration</h3>
+      <p>AI where it actually helps — reading and understanding your documents and messages, pulling out exactly what you need. <b>A tireless assistant for the first-pass work.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- BUILD INDEX -->
+<section id="build">
+  <span class="tag rv">The catalogue — built to order</span>
+  <div class="idx">
+    <div class="row rv"><span class="n">№ 01</span><h3>Dashboards &amp; reporting</h3><p>One screen that shows the health of your business at a glance — the reports you dread, generated automatically.</p></div>
+    <div class="row rv"><span class="n">№ 02</span><h3>Workflow automation</h3><p>First inquiry to final invoice, connected and flowing — not stitched together by memory and manual handoffs.</p></div>
+    <div class="row rv"><span class="n">№ 03</span><h3>AI document tools</h3><p>Custom tools that read your quotes, emails, and documents and pull out exactly what you need — in seconds, not hours.</p></div>
+    <div class="row rv"><span class="n">№ 04</span><h3>Custom internal tools</h3><p>The thing you wish existed but no off-the-shelf software does — built for the way you actually work.</p></div>
+    <div class="row rv"><span class="n">№ 05</span><h3>Ops consulting</h3><p>Sometimes the fix isn’t software, it’s a smarter process. We’ll tell you the truth either way.</p></div>
+  </div>
+</section>
+
+<!-- BEFORE/AFTER -->
+<section class="ba">
+  <span class="tag rv">The swap — before → after</span>
+  <h2 class="rv">The difference clarity makes.</h2>
+  <div class="swap rv">
+    <div class="pair"><div>Numbers scattered across spreadsheets, emails, and your head</div><div>One clear view of the whole business</div></div>
+    <div class="pair"><div>Hours rebuilding the same reports by hand</div><div>Reports that build themselves</div></div>
+    <div class="pair"><div>Reading every document and quote yourself</div><div>AI reads them, you get the answer</div></div>
+    <div class="pair"><div>Errors from copying data between files</div><div>Information flows, error-free</div></div>
+    <div class="pair"><div>“I think we made money on that job…”</div><div>“Here’s exactly what we made — and why”</div></div>
+    <div class="pair"><div>Buried in the day-to-day, no time to plan</div><div>Time &amp; clarity to actually run it</div></div>
+  </div>
+</section>
+
+<!-- OPERATOR -->
+<section class="op">
+  <span class="tag rv">The operator — not a vendor</span>
+  <p class="quote rv">Not from Silicon Valley. From the <em>front desk</em> and the <em>field</em>.</p>
+  <div class="grid">
+    <p class="rv">Years running operations in hospitality, then construction — where information is messy, margins are tight, and “the system” is a spreadsheet plus a lot of remembering. I got tired of flying blind and doing everything by hand, so I built tools to fix it for my own work.</p>
+    <p class="rv">Those automations and AI systems now run every day — estimating, buying out, managing real projects. Ikigai Engine is me doing the same for businesses like yours. <b>I speak operations, not jargon. I build things that work in the real world — it’s the only place I’ve ever worked.</b></p>
+  </div>
+  <p class="stamp-line rv">// TESTED DAILY ON REAL WORK — NOT A DEMO</p>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="audit">
+  <span class="tag rv">The next move — free</span>
+  <p class="whisper rv">Start with a free operations audit. In 30 minutes we’ll find where you’re losing time, repeating yourself, or guessing when you should know — and point to the work we can take off your plate first. <b>No pressure. No jargon. A clear picture of what’s possible.</b></p>
+  <a class="mega rv" href="mailto:hello@ikigaiengine.com?subject=Free%20operations%20audit">
+    <span class="disp">Book the free audit</span>
+    <span class="mrow"><span>30 min — no jargon — no pressure</span><span class="arrow" aria-hidden="true">→→→</span></span>
+  </a>
+  <p class="alt-line rv">Prefer to talk it through first? <a href="mailto:hello@ikigaiengine.com?subject=Consult">Schedule a consult ↗</a> <span>· Clarity first. Then everything gets easier.</span></p>
+</section>
+</main>
+
+<footer>
+  <span>© <span id="yr">2026</span> IKIGAI ENGINE</span>
+  <span><a href="guide.html">How this was built</a> &nbsp;/&nbsp; <a href="../index.html">All five studies</a></span>
+</footer>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* reveal */
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  if(reduce) document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); });
+
+  /* scramble-in hero words */
+  var CHARS = '#$%&@=+*!<>/\\_';
+  function scramble(el){
+    var final = el.textContent, frame = 0, total = 26;
+    (function step(){
+      var out = '';
+      for (var i=0;i<final.length;i++){
+        var reveal = (frame/total)*final.length*1.3;
+        out += i < reveal ? final[i] : (final[i]===' '||final[i]==='.' ? final[i] : CHARS[(Math.random()*CHARS.length)|0]);
+      }
+      el.textContent = out;
+      if (frame++ < total) requestAnimationFrame(step);
+      else el.textContent = final;
+    })();
+  }
+  if(!reduce) document.querySelectorAll('[data-scramble]').forEach(function(el,i){
+    setTimeout(function(){ scramble(el); }, 150 + i*130);
+  });
+
+  /* velocity-reactive marquees + skew */
+  var tracks = [].slice.call(document.querySelectorAll('[data-mq]'));
+  var offs = tracks.map(function(){ return 0; });
+  var lastY = scrollY, vel = 0;
+  function loop(){
+    var dy = scrollY - lastY; lastY = scrollY;
+    vel += (dy - vel) * .08;
+    var v = Math.max(-40, Math.min(40, vel));
+    tracks.forEach(function(t, i){
+      var dir = +t.getAttribute('data-mq');
+      var half = t.scrollWidth / 2;
+      offs[i] -= dir * (1.2 + Math.abs(v) * .12);
+      // wrap
+      if (offs[i] <= -half) offs[i] += half;
+      if (offs[i] > 0) offs[i] -= half;
+      t.style.transform = 'translateX(' + offs[i] + 'px) skewX(' + (-v * .18) + 'deg)';
+    });
+    requestAnimationFrame(loop);
+  }
+  if(!reduce) requestAnimationFrame(loop);
+
+  /* scroll-driven width stretch on method words */
+  var stretches = [].slice.call(document.querySelectorAll('[data-stretch]'));
+  var sraf = null;
+  function updateStretch(){
+    sraf = null;
+    var vh = innerHeight;
+    var maxW = innerWidth < 700 ? 108 : 125;     // keep words inside narrow screens
+    stretches.forEach(function(el){
+      var r = el.getBoundingClientRect();
+      var c = (r.top + r.height/2) / vh;         // 1 bottom → 0 top
+      var t = 1 - Math.min(1, Math.abs(c - .5) * 2);
+      var wdth = 60 + t * (maxW - 60);           // 60 → max at viewport center
+      el.style.fontVariationSettings = "'wdth' " + wdth.toFixed(1);
+      el.style.letterSpacing = ((1-t) * -.01 - .01) + 'em';
+    });
+  }
+  if(!reduce){
+    addEventListener('scroll', function(){ if(!sraf) sraf = requestAnimationFrame(updateStretch); }, {passive:true});
+    updateStretch();
+  } else {
+    stretches.forEach(function(el){ el.style.fontVariationSettings = "'wdth' 100"; });
+  }
+})();
+</script>
+</body>
+</html>
