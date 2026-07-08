@@ -12,6 +12,8 @@ Five complete, radically different landing pages for **Ikigai Engine** (operatio
 | 04 | The Workshop — warm hand-illustrated SVG with displacement "wobble" | [visit](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/workshop/) | [guide](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/workshop/guide.html) |
 | 05 | Run the Business — brutalist kinetic variable-width typography | [visit](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/kinetic/) | [guide](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/kinetic/guide.html) |
 
+**The Cinema Sessions** — study 02 in six cuts (the original + five variations of the particle film, one shared engine): [gallery](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema-variants/) · [Night Chart](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema-variants/constellation/) · [Forge](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema-variants/forge/) · [Current](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema-variants/current/) · [Northern Light](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema-variants/aurora/) · [Paper Cut](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema-variants/paper/) · [how they were built](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema-variants/guide.html)
+
 Sources live in [`site/`](site/). Pushes to this branch republish the sites to the `gh-pages` branch via GitHub Actions.
 
 ---

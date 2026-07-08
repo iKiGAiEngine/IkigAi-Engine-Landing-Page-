@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ikigai Engine — The Night Chart</title>
+<meta name="description" content="A scroll-driven star chart: scattered points become a constellation, orbits, and a clear map of your business. Ikigai Engine — book a free operations audit.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%2306080F'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23F0C86C' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23F0C86C'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../../fonts/fraunces.css">
+<link rel="stylesheet" href="../../fonts/inter.css">
+<link rel="stylesheet" href="../shared/cine.css">
+<style>
+:root{--bg:#070A14;--ink:#ECF1FA;--ink-soft:#A9B6CC;--ink-faint:#66748E;--accent:#F0C86C;--accent-ink:#0A0C14;--accent-dim:rgba(240,200,108,.5);--accent-glow:rgba(240,200,108,.5);--line:rgba(169,182,204,.14);--stroke:rgba(169,182,204,.22);--hdr:rgba(7,10,20,.88);--ftr:rgba(7,10,20,.75);--serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+.backdrop{position:fixed;inset:0;z-index:-1;background:radial-gradient(85% 60% at 50% 0%,rgba(38,52,96,.5),transparent 65%),radial-gradient(60% 50% at 50% 100%,rgba(64,44,12,.28),transparent 70%),#070A14}
+</style>
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+<canvas id="stage" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="bar top" aria-hidden="true"></div>
+<div class="bar bot" aria-hidden="true"></div>
+
+<header>
+  <a class="wordmark" href="#top">Ikigai <b>Engine</b></a>
+  <nav class="links">
+    <a class="hide-m" href="#act1">The problem</a>
+    <a class="hide-m" href="#act2">The method</a>
+    <a class="hide-m" href="../guide.html">How it’s built</a>
+    <a class="btn" href="#finale">Free audit</a>
+  </nav>
+</header>
+
+<nav class="rail" aria-label="Chapters">
+  <a href="#top"><i></i><span>Open</span></a>
+  <a href="#act1"><i></i><span>The dark sky</span></a>
+  <a href="#act2"><i></i><span>The constellation</span></a>
+  <a href="#act3"><i></i><span>The orbits</span></a>
+  <a href="#act4"><i></i><span>The chart</span></a>
+  <a href="#finale"><i></i><span>Begin</span></a>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <p class="over rv">Ikigai Engine charts the sky</p>
+    <h1 class="rv d1">See your business <span class="it">clearly</span>. Then let it run itself.</h1>
+    <p class="sub rv d2">The scattered, messy work you do by hand — turned into clear answers, automated workflows, and AI that does the heavy lifting.</p>
+    <div class="cta-row rv d3">
+      <a class="btn" href="#finale">Book a free operations audit</a>
+      <a class="btn line" href="#act1">Watch the story</a>
+    </div>
+    <p class="micro rv d3">30 minutes. No tech jargon. You’ll leave knowing exactly where you’re losing time.</p>
+    <div class="cue" aria-hidden="true"><i></i>Scroll</div>
+  </section>
+
+  <section class="act" id="act1">
+    <div class="inner">
+      <span class="actno" aria-hidden="true">I</span>
+      <p class="kicker rv">Act I — The dark sky</p>
+      <h2 class="rv">You’re running the business. But can you actually <span class="it">see</span> it?</h2>
+      <p class="body rv d1">Most owners are flying half-blind and buried in busywork at the same time. The numbers live in one spreadsheet, the orders in another, the real story in your inbox — and the rest is just in your head. So you spend your days:</p>
+      <div class="pains">
+        <div class="pain rv"><span class="no">i.</span><p>Rebuilding the same report by hand, every week</p></div>
+        <div class="pain rv"><span class="no">ii.</span><p>Copying the same numbers between files — and praying you didn’t fat-finger one</p></div>
+        <div class="pain rv"><span class="no">iii.</span><p>Reading every quote, email, and document yourself, because no one else can</p></div>
+        <div class="pain rv"><span class="no">iv.</span><p>Chasing answers to simple questions like “are we actually making money on this?”</p></div>
+        <div class="pain rv"><span class="no">v.</span><p>Doing the work instead of running the business — no time left to think</p></div>
+        <p class="body coda rv">It’s not that you’re disorganized. Nobody ever built you the tools to <em>see</em> clearly, or the systems to stop doing it all manually. <strong>That’s both things we fix.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="act" id="act2">
+    <div class="inner">
+      <span class="actno" aria-hidden="true">II</span>
+      <p class="kicker rv">Act II — The constellation</p>
+      <h2 class="rv">First, a lens <span class="it">for your business</span>.</h2>
+      <p class="body rv d1">Right now your business is a black box — even to you. You can feel when something’s off, but you can’t always point to <em>what</em> or <em>why</em>. Ikigai Engine is the lens that lets you look inside: where your time actually goes, where money quietly leaks out, which jobs make you money and which ones cost you.</p>
+      <p class="body rv d2" style="margin-top:16px">We map how you actually work today — no rip-and-replace — and pull your scattered information into one clear place. For the first time, you can see the whole business at a glance. <strong>Once you can see it, you can fix it. And once you can see it, we can automate it.</strong></p>
+    </div>
+  </section>
+
+  <section class="act" id="act3">
+    <div class="inner">
+      <span class="actno" aria-hidden="true">III</span>
+      <p class="kicker rv">Act III — The orbits</p>
+      <h2 class="rv">The busywork doesn’t <span class="it">have to be yours</span>.</h2>
+      <p class="body rv d1">Every business is full of work that has to happen but doesn’t need a human — retyping numbers, formatting reports, sending the same follow-ups. That work quietly eats your week. We take it off your plate two ways:</p>
+      <div class="duet">
+        <div class="cell rv d1">
+          <h3><i>a.</i>Workflow automation</h3>
+          <p>We connect the tools and steps you already use so information flows on its own. The handoffs that used to depend on someone remembering? Automatic. The report you rebuild every Monday? It builds itself. The data you copy between files? It moves itself — without the typos.</p>
+        </div>
+        <div class="cell rv d2">
+          <h3><i>b.</i>AI integration</h3>
+          <p>We bring AI in where it actually helps — reading and understanding your documents, quotes, and messages, then pulling out the exact information you need. A tireless assistant for the first-pass work, so your people only touch the parts that need real judgment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="act" id="act4">
+    <div class="inner">
+      <span class="actno" aria-hidden="true">IV</span>
+      <p class="kicker rv">Act IV — The chart</p>
+      <h2 class="rv">What we <span class="it">build for you</span>.</h2>
+      <div class="repertoire">
+        <div class="rep rv"><h3>Dashboards &amp; reporting</h3><p>One screen that shows the health of your business at a glance — and the reports you dread building by hand, generated automatically.</p></div>
+        <div class="rep rv"><h3>Workflow automation</h3><p>The whole process, from first inquiry to final invoice, connected and flowing instead of stitched together by memory.</p></div>
+        <div class="rep rv"><h3>AI document &amp; data tools</h3><p>Custom tools that read your quotes, emails, and documents and pull out exactly what you need — in seconds, not hours.</p></div>
+        <div class="rep rv"><h3>Custom internal tools</h3><p>The thing you wish existed but no off-the-shelf software does — built for the way you actually work.</p></div>
+        <div class="rep rv"><h3>Operations consulting</h3><p>Sometimes the fix isn’t software, it’s a smarter process. We’ll tell you the truth either way.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="act" id="epilogue">
+    <div class="inner">
+      <p class="kicker rv">Epilogue — The operator</p>
+      <p class="quote rv d1">“I didn’t come from Silicon Valley. I came from the <span class="g">front desk</span> and the <span class="g">field</span>.”</p>
+      <div class="about-strip">
+        <p class="rv d1">Years running operations in hospitality, then in construction — where the information is messy, the margins are tight, and “the system” is usually a spreadsheet and a lot of remembering. I got tired of flying blind and doing everything by hand, so I built tools to fix it for my own work.</p>
+        <p class="rv d2">Those automations and AI systems now get used every day to estimate, buy out, and manage real projects. Ikigai Engine is me doing the same thing for businesses like yours. <strong>I speak operations, not jargon — and I build things that work in the real world, because that’s the only place I’ve ever worked.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="act finale" id="finale">
+    <div class="inner">
+      <p class="kicker rv">Finale — Begin</p>
+      <h2 class="rv">Let’s see what’s hiding <span class="it">in your business</span>.</h2>
+      <p class="body rv d1">Start with a free operations audit. In 30 minutes, we’ll find the spots where you’re losing time, repeating yourself, or guessing when you should know — and point to the work we can take off your plate first. No pressure, no jargon — just a clear picture of what’s possible.</p>
+      <p class="micro rv d1">You stop guessing and stop grinding. Clarity first — then everything gets easier.</p>
+      <div class="cta-row rv d2">
+        <a class="btn" href="mailto:hello@ikigaiengine.com?subject=Free%20operations%20audit">Book your free audit</a>
+        <a class="btn line" href="mailto:hello@ikigaiengine.com?subject=Consult">Schedule a consult</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="row">
+    <span>© <span id="yr">2026</span> Ikigai Engine — clarity, automation &amp; AI for small business</span>
+    <span><a href="../index.html">All six cuts</a> · <a href="../guide.html">How these were built</a> · <a href="../../index.html">The five studies</a></span>
+  </div>
+</footer>
+
+<script type="module">
+import { boot } from '../shared/cine.js';
+boot({
+  forms: ['starfield','shell','orbits','lattice','word'],
+  palettes: [[.62,.7,.85],[.75,.89,1],[.94,.78,.42],[.66,.86,.78],[.94,.78,.42]],
+  word: 'IKIGAI',
+  wordFont: '700 118px Inter, system-ui, sans-serif',
+  spin: 0.05,
+  light: false,
+});
+</script>
+</body>
+</html>
