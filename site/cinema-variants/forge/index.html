@@ -149,10 +149,11 @@
 <script type="module">
 import { boot } from '../shared/cine.js';
 boot({
-  forms: ['chaos','vortex','gear','lattice','word'],
-  palettes: [[.45,.38,.33],[.94,.5,.24],[.98,.62,.2],[.85,.72,.45],[1,.66,.2]],
-  word: 'IKIGAI',
-  wordFont: '700 118px Space Grotesk, system-ui, sans-serif',
+  forms: ['chaos','vortex','gear','swirl','streams','target','lattice','word'],
+  palettes: [[.45,.38,.33],[.94,.5,.24],[.98,.62,.2],[.85,.45,.25],[.95,.6,.3],[.9,.7,.4],[.85,.72,.45],[1,.66,.2]],
+  word: 'IKIGAI ENGINE',
+  lockFont: { family: "'Space Grotesk', system-ui, sans-serif", weight: '700' },
+  lockColors: { mark: '#F0803C', text: '#F3EDE5' },
   spin: 0.07,
   light: false,
 });

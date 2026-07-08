@@ -47,7 +47,7 @@ a{color:var(--gold)}
   </div>
 
   <h2>The concept</h2>
-  <p>Ikigai Engine's promise is turning noise into signal, so the site literally performs it. One fixed full-screen canvas holds a single particle system, and as you scroll through six "acts," the particles morph between five formations that mirror the copy: a <strong>chaotic nebula</strong> (the fog you run your business in) → a <strong>lens iris</strong> (see it) → <strong>braided flow streams</strong> (automate it) → an <strong>ordered lattice</strong> (information in its place) → the word <strong>IKIGAI</strong> (the finale signature). The prose scrolls normally in front of it, so the story reads even if you never notice the choreography — but you notice.</p>
+  <p>Ikigai Engine's promise is turning noise into signal, so the site literally performs it. One fixed full-screen canvas holds a single particle system, and as you scroll, the particles morph through eight formations that mirror the copy: a <strong>chaotic nebula</strong> (the fog you run your business in) → a <strong>spiral galaxy</strong> → a <strong>lens iris</strong> (see it) → <strong>braided flow streams</strong> (automate it) → a <strong>vortex</strong> → <strong>orbit rings</strong> → an <strong>ordered lattice</strong> (information in its place) → the <strong>Ikigai Engine logo</strong> (the finale). The prose scrolls normally in front of it, so the story reads even if you never notice the choreography — but you notice.</p>
 
   <h2>Morphing 15,000 particles</h2>
   <p>Every formation is precomputed on the CPU as a <code>Float32Array</code> of XYZ targets and uploaded once as vertex attributes (<code>aP0…aP4</code>). The GPU does all the movement: a single uniform <code>uSeg</code> (e.g. <code>2.35</code> = 35% of the way from formation 2 to 3) drives a smoothstep mix in the vertex shader. No per-frame buffer updates, so it runs at 60fps even on phones.</p>
@@ -59,11 +59,11 @@ vec3 p = mix(pick(f), pick(f+1.), tt);
 p += breathingNoise(aSeed, uTime);        // idle life</code></pre>
   <p>Each particle also carries a random <code>aSeed</code>, used three ways: to stagger the morph (particles leave in waves, like a murmuration), to vary point size, and to animate a tiny idle drift so the system never looks frozen. Color cross-fades per formation — cold slate for the fog, cyan for the lens, amber for the machine, mint for the lattice, gold for the finale — with additive blending and a soft radial falloff in the fragment shader so overlapping points glow like film grain.</p>
 
-  <h2>The word finale</h2>
-  <p>The "IKIGAI" formation is sampled from a hidden 2D canvas: draw the word with <code>fillText</code>, read back <code>getImageData</code>, keep every 2nd pixel above a brightness threshold, and map those pixel coordinates into world space. Because target positions are just another attribute, the same shader that scattered the nebula also spells the logotype. On phones the sampling box is scaled down so the word fits a narrow viewport.</p>
+  <h2>The logo finale</h2>
+  <p>The final formation is the full brand lockup — ring mark plus "IKIGAI ENGINE" — sampled from a hidden 2D canvas: draw it once, read back <code>getImageData</code>, keep every 2nd bright pixel, and map those pixels into world space so the particles physically gather into the logo's shape. Then, as the gather completes, the particles dim while a <strong>pixel-crisp version of the same lockup</strong> (the very same canvas, exported as an image) crossfades in at the exact projected screen position. Particles become the logo; the logo becomes solid.</p>
 
   <h2>Scroll direction</h2>
-  <p>No scroll-jacking. The page scrolls natively; a tiny function maps the viewport's center against each act's midpoint and interpolates piecewise between formation indices. The render loop then eases toward it (<code>cur += (target-cur)*.085</code>) so fast flicks settle cinematically rather than teleporting. The camera dollies in slightly across the film and follows the mouse a few degrees for parallax.</p>
+  <p>No scroll-jacking. The page scrolls natively; overall scroll progress maps linearly across all eight formations, so a morph is <em>always in flight</em> while you scroll — there is no dead stretch where nothing changes. The render loop eases toward the target (<code>cur += (target-cur)*.11</code>) so fast flicks settle cinematically rather than teleporting, and the whole system slowly rotates with scroll progress, flattening out near the finale so the logo faces the camera squarely.</p>
 
   <h2>The cinema dressing</h2>
   <ul>
