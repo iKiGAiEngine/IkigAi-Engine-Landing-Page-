@@ -1,3 +1,21 @@
+# Ikigai Engine — Five Design Studies
+
+Five complete, radically different landing pages for **Ikigai Engine** (operations clarity, workflow automation & AI for small business), each built entirely in code — no stock images, no external assets — plus a "how it's built" guide per site.
+
+**Live gallery:** https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/
+
+| # | Study | Live site | Guide |
+|---|-------|-----------|-------|
+| 01 | The Operations Blueprint — drafting-table aesthetic, self-drawing SVG schematics | [visit](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/blueprint/) | [guide](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/blueprint/guide.html) |
+| 02 | From Noise to Signal — Three.js scroll film, 15k morphing particles | [visit](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema/) | [guide](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/cinema/guide.html) |
+| 03 | An Essay on Clarity — ultra-minimal luxury editorial, variable-font typography | [visit](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/editorial/) | [guide](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/editorial/guide.html) |
+| 04 | The Workshop — warm hand-illustrated SVG with displacement "wobble" | [visit](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/workshop/) | [guide](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/workshop/guide.html) |
+| 05 | Run the Business — brutalist kinetic variable-width typography | [visit](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/kinetic/) | [guide](https://ikigaiengine.github.io/IkigAi-Engine-Landing-Page-/kinetic/guide.html) |
+
+Sources live in [`site/`](site/). Pushes to this branch republish the sites to the `gh-pages` branch via GitHub Actions.
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
