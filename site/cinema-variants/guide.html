@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How the six cuts were built — The Cinema Sessions</title>
 <meta name="description" content="How five variations of a WebGL particle scroll-film were built from one parameterized engine: a formation library, palette configs, and a light-mode inversion.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%2306080F'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23E8B34B' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23E8B34B'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2318202E'/%3E%3Ccircle cx='16' cy='15' r='9.5' fill='none' stroke='%23F2EFE9' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='52 8' transform='rotate(115 16 15)'/%3E%3Ccircle cx='17.5' cy='20' r='3.3' fill='%23C9A23F'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="../fonts/cormorant.css">
 <link rel="stylesheet" href="../fonts/outfit.css">
 <style>
@@ -47,32 +47,30 @@ a{color:var(--gold)}
   <p>The original "From Noise to Signal" had its choreography hard-coded. For the variations, everything that makes the film <em>feel</em> different was pulled out into a config, and the engine (<code>shared/cine.js</code>, ~300 lines) became a reusable module. Each cut's page is just its themed markup plus this:</p>
 <pre><code>import { boot } from '../shared/cine.js';
 boot({
-  forms:    ['curtains','ribbon','waves','helix','torus','shell','orbits','word'],
+  forms:    ['curtains','mountain','ribbon','helix','star','lightbulb','enso','logo'],
   palettes: [ /* one [r,g,b] ramp per formation */ ],
-  word:     'IKIGAI ENGINE',
-  lockFont: { family: "'Outfit', sans-serif", weight: '600' },
-  lockColors: { mark: '#7BE8A8', text: '#EAF2EF' },
   spin:     .06,
   light:    false,
 });</code></pre>
   <p>The engine works like the original film: every formation is precomputed on the CPU as a <code>Float32Array</code> and uploaded once as a vertex attribute (<code>aP0…aP7</code>); a single scroll-driven uniform morphs between them in the vertex shader with per-particle stagger. Each film runs <strong>eight formations mapped evenly across total scroll progress</strong>, so a morph is always in flight while the page moves — no dead stretches. Zero per-frame buffer updates — phones stay at 60fps.</p>
 
   <h2>The formation library</h2>
-  <p>The interesting new work is a library of ~19 parametric point-cloud generators, each a few lines of math that map random numbers onto a shape. Every cut sequences seven of them (plus the logo lockup); the table shows each cut's signature four:</p>
+  <p>Formations come in two kinds now. <strong>Parametric clouds</strong> (nebula, vortex, waves, helix…) are a few lines of polar math. <strong>Recognizable silhouettes</strong> (clock, eye, bar chart, lightbulb, anvil, fish, star, mountain, envelope, document, checkmark…) are drawn on a hidden 2D canvas and pixel-sampled, so they read instantly, head-on. Every cut sequences seven of them plus the logo:</p>
   <div class="tablewrap">
   <table>
-    <tr><th>Cut</th><th>Act I</th><th>Act II</th><th>Act III</th><th>Act IV</th></tr>
-    <tr><td><b>Night Chart</b></td><td>star field</td><td>celestial sphere</td><td>tilted orbit rings</td><td>lattice</td></tr>
-    <tr><td><b>Forge</b></td><td>ember clusters</td><td>vortex funnel</td><td>gear (rim, teeth, hub, spokes)</td><td>lattice</td></tr>
-    <tr><td><b>Current</b></td><td>drift murk</td><td>sine-swell sheet</td><td>whirlpool spiral</td><td>laminar lanes</td></tr>
-    <tr><td><b>Northern Light</b></td><td>light curtains</td><td>ribbon</td><td>double helix + rungs</td><td>torus ring</td></tr>
-    <tr><td><b>Paper Cut</b></td><td>ink static</td><td>press conveyor</td><td>registration rings</td><td>lattice</td></tr>
+    <tr><th>Cut</th><th>Sequence</th></tr>
+    <tr><td><b>Original</b></td><td>nebula → clock → eye → rising chart → gear → lightbulb → enso → logo</td></tr>
+    <tr><td><b>Night Chart</b></td><td>star field → star → eye → orbit rings → chart → lightbulb → enso → logo</td></tr>
+    <tr><td><b>Forge</b></td><td>ember clusters → vortex → anvil → gear → chart → checkmark → enso → logo</td></tr>
+    <tr><td><b>Current</b></td><td>murk → swell → fish → whirlpool → eye → laminar lanes → enso → logo</td></tr>
+    <tr><td><b>Northern Light</b></td><td>curtains → mountains → ribbon → helix → star → lightbulb → enso → logo</td></tr>
+    <tr><td><b>Paper Cut</b></td><td>ink static → document → envelope → gear → chart → checkmark → enso → logo</td></tr>
   </table>
   </div>
   <p>A few are worth stealing. The <strong>gear</strong> splits particles by probability into rim, teeth (quantized angle bins pushed outward), hub, and five spokes. The <strong>helix</strong> gives 12% of particles to "rungs" that lerp between the two strands, which is what makes it read as structure instead of two springs. The <strong>vortex</strong> is one line of polar math — radius shrinking as height falls while the angle winds 22 radians — but on screen it looks like a crucible pour.</p>
 
-  <h2>The solid-logo finale</h2>
-  <p>Each film now ends on the actual brand, not a particle impression of it. The finale formation samples the full lockup (ring mark + "IKIGAI ENGINE") from a 2D canvas so the particles gather into the logo's exact silhouette — and as the gather completes, the particles dim while a crisp bitmap of the <em>same canvas</em> crossfades in at the same projected screen position and scale. One geometry, two renderings: sand becomes signage. Scroll back up and it dissolves into particles again.</p>
+  <h2>The gradual logo finale</h2>
+  <p>Each film ends on the actual brand — the brush-stroke enso, gold dot, "Ikig<em>Ai</em>" and "— engine —" — rebuilt in code (layered tapering arcs with seeded dry-brush streaks) so it stays crisp at any size and honest to the mark. The ending plays in three phases across a dedicated empty closing viewport: particles <strong>gather</strong> into the lockup's silhouette, <strong>sharpen</strong> as jitter and point size ease down, then <strong>resolve</strong> — the solid logo fades in at the exact projected position while every particle fades fully out. The last screenful is the clean logo alone. One geometry, two renderings: sand becomes signage, then the sand leaves.</p>
 
   <h2>The light-mode inversion</h2>
   <p>"The Paper Cut" is the technically interesting one. The other cuts glow because <strong>additive blending</strong> accumulates brightness against black — on a white page that math produces pure white, i.e. nothing. So the light cut flips to <strong>normal alpha blending</strong> with near-black ink particles at higher opacity, larger point sizes, and dark palettes. Same shader, two uniforms changed, completely different medium: it reads as ink on paper rather than light in the dark. The film grain overlay also switches from <code>overlay</code> to <code>multiply</code> blend so it darkens like paper tooth instead of glowing.</p>

@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ikigai Engine — The Northern Light</title>
 <meta name="description" content="A scroll-driven aurora: curtains of light braid into ribbons, a helix, and a ring of order. Ikigai Engine — book a free operations audit.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%2306080F'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%237BE8A8' stroke-width='1.6'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%237BE8A8'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2318202E'/%3E%3Ccircle cx='16' cy='15' r='9.5' fill='none' stroke='%23F2EFE9' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='52 8' transform='rotate(115 16 15)'/%3E%3Ccircle cx='17.5' cy='20' r='3.3' fill='%23C9A23F'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="../../fonts/outfit.css">
 <link rel="stylesheet" href="../../fonts/inter.css">
+<link rel="stylesheet" href="../../fonts/fraunces.css">
 <link rel="stylesheet" href="../shared/cine.css">
 <style>
 :root{--bg:#05070D;--ink:#EAF2EF;--ink-soft:#A5B8B2;--ink-faint:#63776F;--accent:#7BE8A8;--accent-ink:#07130C;--accent-dim:rgba(123,232,168,.5);--accent-glow:rgba(123,232,168,.45);--line:rgba(165,184,178,.14);--stroke:rgba(165,184,178,.2);--hdr:rgba(5,7,13,.88);--ftr:rgba(5,7,13,.75);--serif:'Outfit',system-ui,sans-serif;--sans:'Inter',system-ui,sans-serif}
@@ -22,7 +23,7 @@
 <div class="bar bot" aria-hidden="true"></div>
 
 <header>
-  <a class="wordmark" href="#top">Ikigai <b>Engine</b></a>
+  <a class="wordmark" href="#top"><svg width="19" height="19" viewBox="0 0 32 32" aria-hidden="true" style="vertical-align:-4px;margin-right:9px"><circle cx="16" cy="15" r="10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="55 8" transform="rotate(115 16 15)"/><circle cx="18" cy="20.5" r="3.6" fill="#C9A23F"/></svg>Ikigai <b>Engine</b></a>
   <nav class="links">
     <a class="hide-m" href="#act1">The problem</a>
     <a class="hide-m" href="#act2">The method</a>
@@ -137,6 +138,8 @@
       </div>
     </div>
   </section>
+
+  <div class="logo-stage" aria-hidden="true"></div>
 </main>
 
 <footer>
@@ -149,11 +152,8 @@
 <script type="module">
 import { boot } from '../shared/cine.js';
 boot({
-  forms: ['curtains','ribbon','waves','helix','torus','shell','orbits','word'],
+  forms: ['curtains','mountain','ribbon','helix','star','lightbulb','enso','logo'],
   palettes: [[.35,.62,.5],[.48,.91,.66],[.55,.8,.9],[.62,.5,.9],[.9,.55,.75],[.5,.85,.8],[.7,.65,.95],[.65,.95,.75]],
-  word: 'IKIGAI ENGINE',
-  lockFont: { family: "'Outfit', system-ui, sans-serif", weight: '600' },
-  lockColors: { mark: '#7BE8A8', text: '#EAF2EF' },
   spin: 0.06,
   light: false,
 });
