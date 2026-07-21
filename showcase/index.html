@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ikigai Engine — Five Studies</title>
+<meta name="description" content="Five radically different landing pages for Ikigai Engine — operations clarity, automation, and AI for small business. Every pixel built in code.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2318202E'/%3E%3Ccircle cx='16' cy='15' r='9.5' fill='none' stroke='%23F2EFE9' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='52 8' transform='rotate(115 16 15)'/%3E%3Ccircle cx='17.5' cy='20' r='3.3' fill='%23C9A23F'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/space-grotesk.css">
+<link rel="stylesheet" href="../fonts/fraunces.css">
+<link rel="stylesheet" href="../fonts/caveat.css">
+<link rel="stylesheet" href="../fonts/anybody.css">
+<link rel="stylesheet" href="../fonts/cormorant.css">
+<link rel="stylesheet" href="../fonts/ibm-plex-mono.css">
+<style>
+:root{
+  --bg:#101014;
+  --panel:#17171D;
+  --ink:#EDECEA;
+  --dim:#8E8D95;
+  --line:rgba(237,236,234,.12);
+  --gold:#E8B34B;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.65}
+::selection{background:var(--gold);color:#101014}
+a{color:inherit}
+
+.top{max-width:1160px;margin:0 auto;padding:clamp(48px,7vw,90px) clamp(20px,4.5vw,44px) clamp(28px,4vw,48px)}
+.kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+h1{font-size:clamp(34px,5.6vw,64px);line-height:1.05;letter-spacing:-.02em;font-weight:600;max-width:20ch}
+h1 em{font-style:normal;color:var(--gold)}
+.intro{margin-top:20px;color:var(--dim);max-width:66ch;font-size:15.5px}
+.intro b{color:var(--ink);font-weight:600}
+.rules{margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.04em}
+.rules span{color:var(--gold)}
+
+.grid{max-width:1160px;margin:0 auto;padding:12px clamp(20px,4.5vw,44px) 40px;display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media (max-width:880px){.grid{grid-template-columns:1fr}}
+.study{
+  display:block;text-decoration:none;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  background:var(--panel);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s;
+}
+.study:hover{transform:translateY(-6px);border-color:rgba(237,236,234,.3);box-shadow:0 24px 60px -30px rgba(0,0,0,.9)}
+.thumb{height:230px;position:relative;overflow:hidden}
+.study .body{padding:20px 22px 22px;display:grid;gap:8px}
+.study .name{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.study .name h2{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.study .name .no{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.2em}
+.study .desc{color:var(--dim);font-size:14px}
+.study .links{margin-top:6px;display:flex;gap:16px;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase}
+.study .links span{color:var(--gold)}
+.study .links .g{color:var(--dim);position:relative;z-index:2}
+.study .links .g:hover{color:var(--ink);text-decoration:underline}
+.study:hover .links span::after{content:" →"}
+
+/* --- thumb 1: blueprint --- */
+.t-bp{background:
+  linear-gradient(rgba(127,180,217,.14) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(127,180,217,.14) 1px,transparent 1px),
+  linear-gradient(rgba(127,180,217,.06) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(127,180,217,.06) 1px,transparent 1px),
+  #0C2340;
+  background-size:64px 64px,64px 64px,10px 10px,10px 10px;
+  display:flex;align-items:center;justify-content:center;
+}
+.t-bp svg{width:72%;max-width:340px}
+.t-bp .lbl{position:absolute;top:12px;left:14px;font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:#6E93B4}
+.t-bp .corner{position:absolute;inset:8px;border:1px solid rgba(127,180,217,.4);pointer-events:none}
+
+/* --- thumb 2: cinema --- */
+.t-cn{background:radial-gradient(80% 70% at 50% 30%,#1B2540 0%,transparent 65%),#06080F;display:flex;align-items:center;justify-content:center}
+.t-cn .stars{position:absolute;inset:0}
+.t-cn .word{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:34px;color:#EDF1F7;letter-spacing:.02em;z-index:1}
+.t-cn .word b{color:#E8B34B;font-weight:500}
+.t-cn .bars{position:absolute;left:0;right:0;height:22px;background:#000}
+.t-cn .bars.b1{top:0}.t-cn .bars.b2{bottom:0}
+
+/* --- thumb 3: editorial --- */
+.t-ed{background:#F6F1E7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.t-ed .folio{font-family:var(--mono);font-size:8.5px;letter-spacing:.34em;color:#8B8376;text-transform:uppercase}
+.t-ed .head{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto;font-weight:360;font-size:40px;color:#191713;line-height:1}
+.t-ed .head em{color:#2E4B3F}
+.t-ed .rule{width:52px;height:1px;background:rgba(25,23,19,.3)}
+.t-ed .rn{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:#8B8376}
+
+/* --- thumb 4: workshop --- */
+.t-wk{background:#FAF3E7;display:flex;align-items:center;justify-content:center}
+.t-wk svg{width:64%;max-width:300px}
+.t-wk .cap{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-family:'Caveat',cursive;font-size:19px;color:#6B5F53;transform:rotate(-1deg)}
+
+/* --- thumb 5: kinetic --- */
+.t-kn{background:#0B0B0B;display:flex;flex-direction:column;justify-content:center;padding:0 22px;gap:2px}
+.t-kn span{font-family:'Anybody',Impact,sans-serif;font-weight:900;text-transform:uppercase;line-height:.95;letter-spacing:-.01em;font-size:34px;color:#F2F1EC}
+.t-kn span:nth-child(2){color:#D8F34E;font-variation-settings:'wdth' 125}
+.t-kn span:nth-child(1){font-variation-settings:'wdth' 78}
+.t-kn span:nth-child(3){font-variation-settings:'wdth' 95}
+.t-kn .mqmini{position:absolute;bottom:0;left:0;right:0;background:#D8F34E;color:#0B0B0B;font-family:var(--mono);font-size:9px;letter-spacing:.18em;padding:5px 0;white-space:nowrap;overflow:hidden}
+.t-kn .mqmini i{font-style:normal;animation:mq 14s linear infinite;display:inline-block}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+.study .thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(16,16,20,0) 82%,rgba(16,16,20,.35));pointer-events:none}
+
+/* footer */
+.note{max-width:1160px;margin:0 auto;padding:8px clamp(20px,4.5vw,44px) 26px;color:var(--dim);font-size:13.5px}
+.note b{color:var(--ink)}
+footer{border-top:1px solid var(--line)}
+footer .row{max-width:1160px;margin:0 auto;padding:22px clamp(20px,4.5vw,44px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+footer a{color:var(--ink);text-decoration:none}
+footer a:hover{color:var(--gold)}
+
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.6,.2,1),transform .7s cubic-bezier(.2,.6,.2,1)}
+.rv.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="top">
+  <p class="kicker rv"><svg width="19" height="19" viewBox="0 0 32 32" aria-hidden="true" style="vertical-align:-4px;margin-right:9px"><circle cx="16" cy="15" r="10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="55 8" transform="rotate(115 16 15)"/><circle cx="18" cy="20.5" r="3.6" fill="#C9A23F"/></svg>Ikigai Engine · design capability showcase</p>
+  <h1 class="rv">One brand. One story. <em>Five radically different worlds.</em></h1>
+  <p class="intro rv">Five complete landing pages for <b>Ikigai Engine</b> — operations clarity, workflow automation, and AI for small business. Same copy, same promise, same “book a free operations audit” ask — reimagined five times, as if by five different world-class studios.</p>
+  <p class="rules rv"><span>Ground rules:</span> every visual built in code (SVG · canvas · CSS · WebGL) — no stock, no image files, no third-party assets. Each site ships with a “how it’s built” guide.</p>
+</div>
+
+<div class="grid">
+  <a class="study rv" href="../blueprint/">
+    <div class="thumb t-bp">
+      <span class="corner" aria-hidden="true"></span>
+      <span class="lbl">DWG IE-OPS-001 · REV C</span>
+      <svg viewBox="0 0 340 150" aria-hidden="true">
+        <g fill="none" stroke="#A8C6DE" stroke-width="1.3">
+          <rect x="10" y="40" width="50" height="64" stroke="#6E93B4" transform="rotate(-5 35 72)"/>
+          <path d="M66 72 C 100 72 100 74 128 74" stroke-dasharray="5 5"/>
+          <circle cx="152" cy="74" r="24" stroke="#F4F9FD"/>
+          <circle cx="152" cy="74" r="14" stroke="#E8C547" stroke-dasharray="4 3"/>
+          <circle cx="152" cy="74" r="3" fill="#E8C547" stroke="none"/>
+          <path d="M176 74 L 210 74" stroke="#E8C547"/>
+          <rect x="210" y="44" width="60" height="60" stroke="#F4F9FD"/>
+          <path d="M226 62 l3 -7 6 0 3 7 7 3 0 6 -7 3 -3 7 -6 0 -3 -7 -7 -3 0 -6 z"/>
+          <path d="M270 74 L 300 74" stroke-dasharray="5 5"/>
+          <rect x="300" y="52" width="32" height="44" stroke="#F4F9FD"/>
+          <path d="M306 64 h 20 M306 74 h 20" stroke="#E8C547"/>
+        </g>
+        <text x="10" y="20" font-family="monospace" font-size="8" fill="#6E93B4" letter-spacing="2">FIG.01 — THE ENGINE</text>
+      </svg>
+    </div>
+    <div class="body">
+      <div class="name"><h2>The Operations Blueprint</h2><span class="no">STUDY 01</span></div>
+      <p class="desc">A drafting-table technical aesthetic — self-drawing schematics, dimension lines, defect logs, and an approval stamp. Cyanotype blue, chalk, and tape yellow.</p>
+      <div class="links"><span>Visit site</span><em class="g" onclick="event.preventDefault();location.href='../blueprint/guide.html'">How it’s built</em></div>
+    </div>
+  </a>
+
+  <a class="study rv" href="../">
+    <div class="thumb t-cn">
+      <canvas class="stars" data-stars aria-hidden="true"></canvas>
+      <span class="bars b1" aria-hidden="true"></span>
+      <span class="word">from noise, <b>signal</b></span>
+      <span class="bars b2" aria-hidden="true"></span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>From Noise to Signal</h2><span class="no">STUDY 02</span></div>
+      <p class="desc">A scroll-driven WebGL film — 15,000 particles morph from chaos to lens to flow to order, and finally spell the brand. Three.js, custom shaders, letterboxed.</p>
+      <div class="links"><span>Visit site</span><em class="g" onclick="event.preventDefault();location.href='../cinema-variants/'">+ 5 more cuts</em><em class="g" onclick="event.preventDefault();location.href='../cinema/guide.html'">How it’s built</em></div>
+    </div>
+  </a>
+
+  <a class="study rv" href="../editorial/">
+    <div class="thumb t-ed">
+      <span class="folio">An essay on clarity · MMXXVI</span>
+      <span class="head">See it <em>clearly</em>.</span>
+      <span class="rule" aria-hidden="true"></span>
+      <span class="rn">chapters i — iii</span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>An Essay on Clarity</h2><span class="no">STUDY 03</span></div>
+      <p class="desc">Ultra-minimal luxury editorial — Fraunces with optical sizing, drop caps, chapter numerals, a ledger interlude, and one bottle-green accent. Typography only.</p>
+      <div class="links"><span>Visit site</span><em class="g" onclick="event.preventDefault();location.href='../editorial/guide.html'">How it’s built</em></div>
+    </div>
+  </a>
+
+  <a class="study rv" href="../workshop/">
+    <div class="thumb t-wk">
+      <svg viewBox="0 0 300 130" aria-hidden="true">
+        <g fill="none" stroke="#3B322C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="18" y="42" width="54" height="44" fill="#FFFDF7" transform="rotate(-6 45 64)"/>
+          <path d="M30 56 h 30 M30 66 h 30 M30 76 h 18" stroke-width="1.6" transform="rotate(-6 45 64)"/>
+          <path d="M84 64 C 104 56 108 56 122 60" stroke="#C4653F" stroke-dasharray="5 6"/>
+          <rect x="126" y="34" width="62" height="56" rx="10" fill="#F3DCA4"/>
+          <circle cx="144" cy="56" r="5"/><circle cx="170" cy="56" r="5"/>
+          <path d="M146 72 Q 157 79 168 72"/>
+          <path d="M157 34 v -10"/><circle cx="157" cy="19" r="5" fill="#EFC5AF"/>
+          <path d="M192 60 C 210 52 214 52 228 58" stroke="#5F7C58" stroke-dasharray="5 6"/>
+          <rect x="232" y="36" width="52" height="56" rx="5" fill="#FFFDF7"/>
+          <path d="M242 52 h 32" stroke="#C4653F" stroke-width="1.8"/>
+          <path d="M242 66 L 254 56 L 264 62 L 276 48" stroke="#E0A32E" stroke-width="2"/>
+        </g>
+      </svg>
+      <span class="cap">the pile → the engine (friendly) → one clear view!</span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>The Workshop</h2><span class="no">STUDY 04</span></div>
+      <p class="desc">Warm, human, and hand-illustrated — wobbly SVG line art via displacement filters, sticker cards, washi tape, marker highlights, and handwritten margin notes.</p>
+      <div class="links"><span>Visit site</span><em class="g" onclick="event.preventDefault();location.href='../workshop/guide.html'">How it’s built</em></div>
+    </div>
+  </a>
+
+  <a class="study rv" href="../kinetic/">
+    <div class="thumb t-kn">
+      <span>SEE IT.</span>
+      <span>AUTOMATE IT.</span>
+      <span>LET AI LIFT.</span>
+      <div class="mqmini" aria-hidden="true"><i>&nbsp;CLARITY FIRST — NO JARGON — YOURS TO KEEP — CLARITY FIRST — NO JARGON — YOURS TO KEEP —&nbsp;CLARITY FIRST — NO JARGON — YOURS TO KEEP — CLARITY FIRST — NO JARGON — YOURS TO KEEP —</i></div>
+    </div>
+    <div class="body">
+      <div class="name"><h2>Run the Business</h2><span class="no">STUDY 05</span></div>
+      <p class="desc">Brutalist kinetic typography — a variable font stretched by your scroll, velocity-reactive marquees, scramble-in headlines, black and acid green.</p>
+      <div class="links"><span>Visit site</span><em class="g" onclick="event.preventDefault();location.href='../kinetic/guide.html'">How it’s built</em></div>
+    </div>
+  </a>
+
+  <div class="study rv" style="display:flex;align-items:center;justify-content:center;min-height:200px;background:linear-gradient(135deg,#17171D,#101014)">
+    <div style="text-align:center;padding:30px">
+      <p style="font-family:var(--mono);font-size:11px;letter-spacing:.26em;color:var(--gold);text-transform:uppercase;margin-bottom:14px">The common thread</p>
+      <p style="font-size:19px;max-width:34ch;line-height:1.5">See it. Automate it. Let AI handle the heavy lifting. <span style="color:var(--dim)">— every study, one operating idea.</span></p>
+    </div>
+  </div>
+</div>
+
+<p class="note rv">Each study is a complete, conversion-ready landing page: hero promise, the pain, the three-beat story, proof, and a “book a free operations audit” ask. Open any study’s <b>How it’s built</b> page for the techniques behind it.</p>
+
+<footer>
+  <div class="row">
+    <span>© <span id="yr">2026</span> Ikigai Engine</span>
+    <span>Built entirely in code — no images, no stock, no asset services</span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.1});
+document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+if(matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); });
+
+/* twinkling star field for the cinema thumb */
+(function(){
+  var c = document.querySelector('[data-stars]');
+  if(!c) return;
+  var x = c.getContext('2d'), W, H, pts = [];
+  function size(){
+    W = c.width = c.offsetWidth * devicePixelRatio;
+    H = c.height = c.offsetHeight * devicePixelRatio;
+    pts = [];
+    for (var i=0;i<170;i++) pts.push([Math.random()*W, Math.random()*H, Math.random()]);
+  }
+  size(); addEventListener('resize', size);
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function draw(t){
+    x.clearRect(0,0,W,H);
+    for (var i=0;i<pts.length;i++){
+      var p = pts[i];
+      var a = reduce ? .6 : (.35 + .5*Math.abs(Math.sin(t*.0006 + p[2]*7)));
+      x.globalAlpha = a * .9;
+      x.fillStyle = i % 9 ? '#AEBACC' : '#E8B34B';
+      x.fillRect(p[0], p[1], 1.6*devicePixelRatio, 1.6*devicePixelRatio);
+    }
+    if(!reduce) requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

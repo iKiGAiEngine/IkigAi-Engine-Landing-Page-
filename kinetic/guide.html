@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How it was built — the kinetic type site</title>
+<meta name="description" content="A build guide for the kinetic typography Ikigai Engine site: variable-font width animation, velocity-reactive marquees, scramble text, and brutalist restraint.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0B0B'/%3E%3Ctext x='16' y='24' font-family='Arial Black' font-size='22' font-weight='900' text-anchor='middle' fill='%23D8F34E'%3EI%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/anybody.css">
+<link rel="stylesheet" href="../fonts/space-mono.css">
+<style>
+:root{--bg:#0B0B0B;--ink:#F2F1EC;--dim:#8F8E86;--acid:#D8F34E;--line:rgba(242,241,236,.16);
+--disp:'Anybody',Impact,sans-serif;--mono:'Space Mono',ui-monospace,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:15.5px;line-height:1.75}
+main{max-width:760px;margin:0 auto;padding:60px clamp(20px,5vw,40px) 100px}
+.crumb{font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.crumb a{color:var(--acid);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+h1{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:clamp(30px,6.4vw,54px);line-height:.95;margin:20px 0 14px;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--acid)}
+.sub{color:var(--dim);max-width:58ch}
+h2{font-family:var(--disp);font-weight:800;text-transform:uppercase;font-size:22px;margin:52px 0 12px;padding-top:24px;border-top:1px solid var(--line)}
+h2 span{color:var(--acid);margin-right:10px}
+p{color:var(--dim);margin:12px 0;max-width:66ch}
+strong{color:var(--ink)}
+code{font-size:.85em;background:rgba(216,243,78,.14);padding:2px 6px;color:var(--acid)}
+pre{background:#050505;border:1px solid var(--line);padding:18px;overflow-x:auto;margin:16px 0;font-size:12.5px;line-height:1.6}
+pre code{background:none;color:#C9C7BD;padding:0}
+ul{margin:12px 0 12px 22px;color:var(--dim)}
+li{margin:8px 0}
+.meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:26px;border:1px solid var(--line);padding:16px 20px;font-size:12.5px}
+.meta span{color:var(--dim);display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2px}
+.meta b{color:var(--acid)}
+a{color:var(--acid)}
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb"><a href="index.html">← Back to the site</a> · <a href="../showcase/">All five studies</a></p>
+  <h1>How the <em>kinetic type</em> site was built</h1>
+  <p class="sub">No illustrations, no 3D, no photography. One variable font under tension, and a page that moves the way the copy sounds.</p>
+  <div class="meta">
+    <div><span>Stack</span><b>HTML + CSS + vanilla JS</b></div>
+    <div><span>Star of the show</span><b>Anybody (variable wdth axis)</b></div>
+    <div><span>Palette</span><b>Black / bone / acid</b></div>
+    <div><span>Images used</span><b>None</b></div>
+  </div>
+
+  <h2><span>01</span>A font as the engine</h2>
+  <p><strong>Anybody</strong> is a variable font with a width axis running from 50 (compressed) to 150 (expanded). That axis is the whole site. The three method words — SEE IT. / AUTOMATE IT. / LET AI LIFT. — are physically <strong>stretched by your scroll position</strong>: a scroll handler measures each word's distance from the viewport center and maps it to <code>font-variation-settings: 'wdth' …</code>, so words inhale as they approach the middle of the screen and exhale as they leave.</p>
+<pre><code>const c = (rect.top + rect.height/2) / innerHeight;
+const t = 1 - Math.min(1, Math.abs(c - .5) * 2);   // 1 at center
+el.style.fontVariationSettings = `'wdth' ${60 + t * 65}`;</code></pre>
+  <p>Because it's a real variable axis (not <code>transform: scaleX</code>), the letterforms re-draw correctly — stems stay upright, counters open up. That's the difference between typography moving and typography being smeared. The service-index rows and pain-list lines use the same axis on hover, easing from condensed to wide with a long cubic-bezier.</p>
+
+  <h2><span>02</span>Velocity-reactive marquees</h2>
+  <p>The two marquee bands don't run on CSS animations — a <code>requestAnimationFrame</code> loop advances their <code>translateX</code> manually, so their speed can react to <strong>scroll velocity</strong>. Scroll fast and the bands whip and <strong>skew</strong> like they've caught your momentum; stop and they settle back to a lazy drift. Velocity is smoothed with an exponential moving average so it never jitters:</p>
+<pre><code>vel += (dy - vel) * .08;                  // smooth
+offset -= dir * (1.2 + |vel| * .12);      // speed
+track.style.transform =
+  `translateX(${offset}px) skewX(${-vel * .18}deg)`;</code></pre>
+
+  <h2><span>03</span>The scramble-in</h2>
+  <p>The hero words slam up from clipped containers (pure CSS keyframes with staggered delays), while a decoder effect churns their glyphs through <code>#$%&amp;@=+*</code> before locking in the real characters left-to-right over ~26 frames. It's about 15 lines of JS and it sets the tone in the first half-second: this page is typographic machinery.</p>
+
+  <h2><span>04</span>Brutalist discipline</h2>
+  <ul>
+    <li><strong>Two fonts, three colors, zero border-radius.</strong> Anybody for display, Space Mono for everything else; black, bone-white, and one acid green. Constraint is what makes the loud parts loud.</li>
+    <li><strong>The header uses <code>mix-blend-mode: difference</code></strong>, so it stays legible over black, bone, and acid sections without a background — and turns an odd blue over the acid panel, which is exactly the kind of glitch brutalism keeps.</li>
+    <li><strong>The before/after "swap"</strong> is a full-bleed acid panel: strikethrough mono on the left, condensed display caps on the right. High contrast does the persuading.</li>
+    <li><strong>The CTA is a landmass</strong> — a full-width acid block whose headline widens on hover (same wdth axis) and whose arrows shove right. You cannot miss it, which is the point of a CTA.</li>
+  </ul>
+
+  <h2><span>05</span>Keeping it usable</h2>
+  <ul>
+    <li>Everything falls back gracefully: <code>prefers-reduced-motion</code> kills the marquee loop, the scramble, and the scroll-stretch (words rest at <code>wdth 100</code>).</li>
+    <li>On phones the stretch is capped (<code>wdth ≤ 108</code>) and the method words drop to a size that survives 390px, because a word that clips off-screen isn't kinetic, it's broken.</li>
+    <li>Scroll handlers are throttled through <code>requestAnimationFrame</code>; the marquee is the only persistent loop and it moves two elements with transforms only — no layout thrash.</li>
+  </ul>
+
+  <h2><span>06</span>Lessons if you build one</h2>
+  <ul>
+    <li>Variable fonts are the highest power-to-weight animation tool on the web: one file, infinite in-betweens, GPU-cheap.</li>
+    <li>Map motion to <em>user input</em> (scroll position, velocity, hover) rather than timelines — it makes the page feel operated instead of watched. Fits a brand that automates things.</li>
+    <li>Loud design needs quiet lines: keep body copy small, mono, and dim so the display type owns the room.</li>
+  </ul>
+</main>
+</body>
+</html>

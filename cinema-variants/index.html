@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ikigai Engine — The Cinema Sessions</title>
+<meta name="description" content="Six cuts of one scroll-driven particle film for Ikigai Engine — the original and five variations, each with its own choreography, palette, and typography.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2318202E'/%3E%3Ccircle cx='16' cy='15' r='9.5' fill='none' stroke='%23F2EFE9' stroke-width='2.4' stroke-linecap='round' stroke-dasharray='52 8' transform='rotate(115 16 15)'/%3E%3Ccircle cx='17.5' cy='20' r='3.3' fill='%23C9A23F'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/cormorant.css">
+<link rel="stylesheet" href="../fonts/outfit.css">
+<style>
+:root{
+  --bg:#06080F;
+  --panel:#0D1019;
+  --ink:#EDF1F7;
+  --dim:#8B95A8;
+  --line:rgba(237,241,247,.12);
+  --gold:#E8B34B;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Outfit',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body{background:radial-gradient(85% 55% at 50% -5%,rgba(34,48,80,.5),transparent 65%),var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;font-size:16.5px;line-height:1.65}
+::selection{background:var(--gold);color:#06080F}
+a{color:inherit}
+
+.top{max-width:1160px;margin:0 auto;padding:clamp(48px,7vw,90px) clamp(20px,4.5vw,44px) clamp(24px,3.5vw,40px);text-align:center}
+.kicker{font-size:11px;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;font-weight:400}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,6.4vw,76px);line-height:1.04;letter-spacing:.005em;max-width:18ch;margin:0 auto}
+h1 em{font-style:italic;color:var(--gold)}
+.intro{margin:22px auto 0;color:var(--dim);max-width:62ch;font-size:15.5px}
+.intro b{color:var(--ink);font-weight:400}
+.crumbs{margin-top:18px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.crumbs a{color:var(--gold);text-decoration:none}
+.crumbs a:hover{text-decoration:underline}
+
+.grid{max-width:1160px;margin:0 auto;padding:26px clamp(20px,4.5vw,44px) 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+@media (max-width:1020px){.grid{grid-template-columns:1fr 1fr}}
+@media (max-width:680px){.grid{grid-template-columns:1fr}}
+
+.cut{
+  display:block;text-decoration:none;border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  background:var(--panel);position:relative;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s;
+}
+.cut:hover{transform:translateY(-6px);border-color:rgba(237,241,247,.3);box-shadow:0 24px 60px -30px rgba(0,0,0,.9)}
+.thumb{height:190px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.thumb canvas{position:absolute;inset:0;width:100%;height:100%}
+.thumb .word{position:relative;z-index:1;font-family:var(--serif);font-style:italic;font-weight:500;font-size:25px;letter-spacing:.02em;text-align:center;padding:0 14px}
+.thumb .bars{position:absolute;left:0;right:0;height:16px;background:#000;z-index:2}
+.thumb .bars.b1{top:0}.thumb .bars.b2{bottom:0}
+.cut .body{padding:18px 20px 20px}
+.cut .name{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.cut .name h2{font-family:var(--sans);font-weight:400;font-size:18.5px;letter-spacing:.01em;color:var(--ink)}
+.cut .name .no{font-size:10.5px;color:var(--dim);letter-spacing:.22em}
+.cut .desc{color:var(--dim);font-size:13.5px;margin-top:7px}
+.cut .go{margin-top:12px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.cut:hover .go::after{content:" →"}
+.cut.orig{outline:1px solid rgba(232,179,75,.35);outline-offset:-1px}
+.cut.orig .tagline{position:absolute;top:10px;right:12px;z-index:3;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#06080F;background:var(--gold);padding:4px 8px;border-radius:2px}
+
+.note{max-width:1160px;margin:0 auto;padding:4px clamp(20px,4.5vw,44px) 30px;color:var(--dim);font-size:13.5px;text-align:center}
+.note a{color:var(--gold);text-decoration:none}
+.note a:hover{text-decoration:underline}
+footer{border-top:1px solid var(--line)}
+footer .row{max-width:1160px;margin:0 auto;padding:22px clamp(20px,4.5vw,44px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+footer a{color:var(--ink);text-decoration:none}
+footer a:hover{color:var(--gold)}
+
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.6,.2,1),transform .7s cubic-bezier(.2,.6,.2,1)}
+.rv.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="top">
+  <p class="kicker rv"><svg width="19" height="19" viewBox="0 0 32 32" aria-hidden="true" style="vertical-align:-4px;margin-right:9px"><circle cx="16" cy="15" r="10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="55 8" transform="rotate(115 16 15)"/><circle cx="18" cy="20.5" r="3.6" fill="#C9A23F"/></svg>Ikigai Engine · study 02, in six cuts</p>
+  <h1 class="rv">One film. <em>Six ways to shoot it.</em></h1>
+  <p class="intro rv">The original scroll-driven particle film — <b>From Noise to Signal</b> — re-scored five times. Same story, same promise, same engine: thousands of particles morph through the arc of your business (chaos → clarity → flow → order → the brand). Each cut changes the choreography, palette, and typography.</p>
+  <p class="crumbs rv"><a href="../showcase/">← The five studies</a> &nbsp;·&nbsp; <a href="guide.html">How these were built</a></p>
+</div>
+
+<div class="grid">
+  <a class="cut orig rv" href="../cinema/" data-th="orig">
+    <div class="thumb">
+      <canvas aria-hidden="true"></canvas>
+      <span class="bars b1" aria-hidden="true"></span><span class="bars b2" aria-hidden="true"></span>
+      <span class="word" style="color:#EDF1F7">from noise, <i style="color:#E8B34B">signal</i></span>
+      <span class="tagline">The original</span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>From Noise to Signal</h2><span class="no">CUT 00</span></div>
+      <p class="desc">Nebula → lens iris → braided streams → lattice. Deep space blue and gold; Cormorant &amp; Outfit.</p>
+      <p class="go">Watch this cut</p>
+    </div>
+  </a>
+
+  <a class="cut rv" href="constellation/" data-th="constellation">
+    <div class="thumb">
+      <canvas aria-hidden="true"></canvas>
+      <span class="bars b1" aria-hidden="true"></span><span class="bars b2" aria-hidden="true"></span>
+      <span class="word" style="color:#ECF1FA;font-family:'Cormorant Garamond',serif">the <i style="color:#F0C86C">night chart</i></span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>The Night Chart</h2><span class="no">CUT 01</span></div>
+      <p class="desc">Star field → celestial sphere → tilted orbit rings → chart. Indigo night and star gold; Fraunces &amp; Inter.</p>
+      <p class="go">Watch this cut</p>
+    </div>
+  </a>
+
+  <a class="cut rv" href="forge/" data-th="forge">
+    <div class="thumb">
+      <canvas aria-hidden="true"></canvas>
+      <span class="bars b1" aria-hidden="true"></span><span class="bars b2" aria-hidden="true"></span>
+      <span class="word" style="color:#F3EDE5;font-family:'Outfit',sans-serif;font-style:normal;font-weight:500">the <i style="color:#F0803C;font-style:italic">forge</i></span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>The Forge</h2><span class="no">CUT 02</span></div>
+      <p class="desc">Ember cloud → crucible vortex → a great gear → clean stock. Charcoal and furnace orange; Space Grotesk &amp; Plex Mono.</p>
+      <p class="go">Watch this cut</p>
+    </div>
+  </a>
+
+  <a class="cut rv" href="current/" data-th="current">
+    <div class="thumb">
+      <canvas aria-hidden="true"></canvas>
+      <span class="bars b1" aria-hidden="true"></span><span class="bars b2" aria-hidden="true"></span>
+      <span class="word" style="color:#E7F4F6">the <i style="color:#4FD8C4">current</i></span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>The Current</h2><span class="no">CUT 03</span></div>
+      <p class="desc">Murk → rolling swell → whirlpool → laminar channel. Abyssal teal and bioluminescence; Cormorant &amp; Nunito.</p>
+      <p class="go">Watch this cut</p>
+    </div>
+  </a>
+
+  <a class="cut rv" href="aurora/" data-th="aurora">
+    <div class="thumb">
+      <canvas aria-hidden="true"></canvas>
+      <span class="bars b1" aria-hidden="true"></span><span class="bars b2" aria-hidden="true"></span>
+      <span class="word" style="color:#EAF2EF;font-family:'Outfit',sans-serif;font-style:normal;font-weight:300">the <i style="color:#7BE8A8;font-style:italic">northern light</i></span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>The Northern Light</h2><span class="no">CUT 04</span></div>
+      <p class="desc">Light curtains → ribbon → double helix → ring. Polar green and violet on near-black; Outfit &amp; Inter.</p>
+      <p class="go">Watch this cut</p>
+    </div>
+  </a>
+
+  <a class="cut rv" href="paper/" data-th="paper">
+    <div class="thumb" style="background:#F7F4EC">
+      <canvas aria-hidden="true"></canvas>
+      <span class="bars b1" aria-hidden="true"></span><span class="bars b2" aria-hidden="true"></span>
+      <span class="word" style="color:#17150F;font-family:'Cormorant Garamond',serif">the <i style="color:#C33B2E">paper cut</i></span>
+    </div>
+    <div class="body">
+      <div class="name"><h2>The Paper Cut</h2><span class="no">CUT 05</span></div>
+      <p class="desc">The inversion: ink static on paper → press lines → registration rings. Light mode, ink and red; Fraunces &amp; Space Mono.</p>
+      <p class="go">Watch this cut</p>
+    </div>
+  </a>
+</div>
+
+<p class="note rv">All six run on one shared engine — precomputed formations as vertex attributes, one scroll-driven uniform, custom GLSL — with each cut supplying its own choreography and palette. <a href="guide.html">Read how it works →</a></p>
+
+<footer>
+  <div class="row">
+    <span>© <span id="yr">2026</span> Ikigai Engine</span>
+    <span><a href="../showcase/">The five studies</a> · <a href="guide.html">How these were built</a></span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.1});
+document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduce) document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); });
+
+/* animated particle thumbnails — tiny 2D sketches of each cut's signature formation */
+var THEMES = {
+  orig:          { bg:'#06080F', dots:['#AEBACC','#E8B34B'], mode:'nebula' },
+  constellation: { bg:'#070A14', dots:['#BFD3F0','#F0C86C'], mode:'stars' },
+  forge:         { bg:'#0D0B09', dots:['#F0803C','#FFB347'], mode:'vortex' },
+  current:       { bg:'#04121B', dots:['#4FD8C4','#8CD4F0'], mode:'waves' },
+  aurora:        { bg:'#05070D', dots:['#7BE8A8','#9E80E6'], mode:'curtain' },
+  paper:         { bg:'#F7F4EC', dots:['#17150F','#C33B2E'], mode:'target' },
+};
+document.querySelectorAll('.cut').forEach(function(card){
+  var th = THEMES[card.getAttribute('data-th')];
+  var c = card.querySelector('canvas');
+  if (!c || !th) return;
+  var x = c.getContext('2d'), W, H, pts = [];
+  function size(){
+    W = c.width = c.offsetWidth * devicePixelRatio;
+    H = c.height = c.offsetHeight * devicePixelRatio;
+    pts = [];
+    for (var i = 0; i < 130; i++) pts.push([Math.random(), Math.random(), Math.random()]);
+  }
+  size(); addEventListener('resize', size);
+  function pos(p, t){
+    var u = p[0], v = p[1], s = p[2];
+    switch (th.mode) {
+      case 'stars':   return [u * W, v * H];
+      case 'vortex':  { var r = (1 - v) * .42 * H, a = v * 14 + t * .0006 + s * 6; return [W/2 + Math.cos(a) * r, H * .12 + v * H * .8]; }
+      case 'waves':   return [u * W, H/2 + Math.sin(u * 7 + t * .001 + s * 3) * H * .22 + (s - .5) * H * .3];
+      case 'curtain': return [u * W, v * H * .9 + Math.sin(u * 9 + t * .0012) * H * .08];
+      case 'target':  { var ring = 1 + ((s * 5) | 0), a2 = u * Math.PI * 2 + t * .0002; var r2 = ring * H * .085; return [W/2 + Math.cos(a2) * r2, H/2 + Math.sin(a2) * r2]; }
+      default:        { var a3 = u * Math.PI * 2 + t * .0003, r3 = Math.pow(v, .6) * .45 * Math.min(W,H); return [W/2 + Math.cos(a3) * r3 * 1.4, H/2 + Math.sin(a3) * r3 * .8]; }
+    }
+  }
+  function draw(t){
+    x.fillStyle = th.bg; x.fillRect(0, 0, W, H);
+    for (var i = 0; i < pts.length; i++){
+      var p = pts[i], q = pos(p, t);
+      x.globalAlpha = .4 + .5 * Math.abs(Math.sin(t * .0008 + p[2] * 7));
+      x.fillStyle = i % 7 ? th.dots[0] : th.dots[1];
+      x.fillRect(q[0], q[1], 1.7 * devicePixelRatio, 1.7 * devicePixelRatio);
+    }
+    x.globalAlpha = 1;
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+});
+</script>
+</body>
+</html>
